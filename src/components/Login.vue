@@ -4,7 +4,7 @@
       <h2 style="margin: 80px auto;color: aquamarine">登录</h2>
       <el-form :model="form" label-width="120px" class="pos" ref="formEl" :rules="rules">
         <el-form-item label="账号" class="item">
-          <el-input v-model="form.account" />
+          <el-input v-model="form.userName" />
         </el-form-item>
         <el-form-item label="密码" class="item">
           <el-input type="password" v-model="form.password" />
@@ -32,16 +32,16 @@ export default {
       document.querySelector('body').removeAttribute('style')
     })
     const form=reactive({
-      account:'',
+      userName:'',
       password:''
     })
     const router = useRouter();
     const formEl=ref('')
     const rules=reactive({
-      account: { required: true, message: '请输入账号', trigger: 'blur'},
+      userName: { required: true, message: '请输入账号', trigger: 'blur'},
       password: { required: true, message: '请输入密码', trigger: 'blur'}
     })
-    let useStore=userStore()
+    let userStoreVar=userStore()
     let submit=async (formEl) => {
       if (!formEl) return
       formEl.validate(async (valid) => {
@@ -53,7 +53,7 @@ export default {
               type: 'error',
             })
           } else {
-            useStore.construct(data)
+            userStoreVar.construct(data)
             ElMessage({
               message: '登陆成功',
               type: 'success',
