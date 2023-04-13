@@ -13,6 +13,6 @@ export default {
   .main{
     width: 100%;
     height: 800px;
-    background-color: red;
+    background-color: lightgray;
   }
 </style>
