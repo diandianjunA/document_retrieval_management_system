@@ -21,7 +21,6 @@ import {post} from "@/request/request";
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
 import {userStore} from "@/store/userStore";
-
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
@@ -80,20 +79,20 @@ export default {
 </script>
 
 <style>
-  .box{
-    margin: 200px auto;
-    width: 600px;
-    height: 400px;
-    background-color: rgb(130,77,81);
-    display: flex;
-    position: relative;
-  }
-  .pos{
-    position: absolute;
-    top: 35%;
-    left: 17%;
-  }
-  .item .el-form-item__label{
-    color: aliceblue;
-  }
+.box{
+  margin: 200px auto;
+  width: 600px;
+  height: 400px;
+  background-color: rgb(130,77,81);
+  display: flex;
+  position: relative;
+}
+.pos{
+  position: absolute;
+  top: 35%;
+  left: 17%;
+}
+.item .el-form-item__label{
+  color: aliceblue;
+}
 </style>

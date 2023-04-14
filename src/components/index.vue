@@ -31,7 +31,6 @@ export default {
     let box = ref(null);
     let style=reactive({})
     onMounted(async () => {
-      console.log(box.value)
       style = {
         height: box.value
       }
