@@ -1,7 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import index from "@/components/index";
 import Login from "@/components/Login";
-import Main from "@/components/Index/Main";
+import AddCase from "@/components/case/AddCase";
+import ModifyCase from "@/components/case/ModifyCase";
 const routes = [
     {
         path: "/",
@@ -16,8 +17,12 @@ const routes = [
         component: index,
         children:[
             {
-                path: "main",
-                component: Main
+                path: "addCase",
+                component: AddCase
+            },
+            {
+                path: "modifyCase",
+                component: ModifyCase
             }
         ]
     }

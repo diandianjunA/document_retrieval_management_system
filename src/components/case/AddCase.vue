@@ -1,107 +1,77 @@
 <template>
-  <el-form :model="form" style="margin-right: 120px" ref="ruleFormRef" :rules="rules">
-    <el-form-item label="员工Id" :label-width="formLabelWidth">
-      <el-input v-model="form.id"/>
-    </el-form-item>
-    <el-form-item label="员工账户" :label-width="formLabelWidth" prop="account">
-      <el-input v-model="form.account"/>
-    </el-form-item>
-    <el-form-item label="员工姓名" :label-width="formLabelWidth" prop="name">
+  <h1 style="text-align: center;font-size: 40px;margin-top: 20px">新建案例项目</h1>
+  <el-form :model="form" :rules="rules" ref="ruleFormRef" style="position:relative;height: 600px">
+    <el-form-item label="项目名称" :label-width="formLabelWidth" prop="name" style="width: 380px;margin: 40px auto auto;">
       <el-input v-model="form.name"/>
     </el-form-item>
-    <el-form-item label="员工密码" :label-width="formLabelWidth" prop="password">
-      <el-input type="password" v-model="form.password"/>
+    <el-form-item label="项目类型" :label-width="formLabelWidth" prop="category" style="width: 380px;margin: 40px auto auto">
+      <el-input v-model="form.category"/>
     </el-form-item>
-    <el-form-item label="员工年龄" :label-width="formLabelWidth"  prop="age">
-      <el-input v-model.number="form.age"/>
+    <el-form-item label="项目备注" :label-width="formLabelWidth" prop="remark" style="width: 380px;margin: 40px auto auto">
+      <textarea v-model="form.remark" style="width: 380px;height: 100px;padding:10px;font-size: 15px;resize: none"></textarea>
     </el-form-item>
+    <el-button type="primary" @click="submit(ruleFormRef)" style="position: absolute;left: 50%;top: 280px;margin-left: -28px;">提交</el-button>
   </el-form>
 </template>
 
 <script>
 import {reactive, ref} from "vue";
-import {get} from "@/request/request"
 import {userStore} from "@/store/userStore";
+import {ElMessage} from "element-plus";
+import {post} from "@/request/request";
 
 export default {
   name: "AddCase",
   setup(){
-    const httpUrl='http://localhost:8070'
+    const httpUrl="http://localhost:8070"
     const check=ref(true)
     const userStoreVar=userStore()
+    const ruleFormRef = ref('')
     const form = reactive({
       id:'',
-      account:'',
       name: '',
-      password: '',
-      age: '',
-      sex: '',
-      phone: '',
-      roleId: '',
-      valid: '',
+      category: '',
+      remark: '',
     })
-    const formLabelWidth='140px'
+    const formLabelWidth='80px'
     const rules = reactive({
-      name: [{ required: true,message: "请输入姓名", trigger: 'blur' }],
-      account: [{validator: checkAccount, trigger: 'blur' }],
-      password: [{ required: true,message: "请输入密码", trigger: 'blur' }],
-      age: [{validator: checkAge, trigger: 'blur' }],
-      phone: [{validator: checkPhone, trigger: 'blur' }],
-      sex: [{ required: true,message: "请选择性别", trigger: 'blur' }],
-      roleId: [{ required: true,message: "请选择角色", trigger: 'blur' }],
-      valid: [{ required: true,message: "请选择是否禁用", trigger: 'blur' }],
+      name: [{ required: true,message: "请输入项目名称", trigger: 'blur' }],
+      category: [{required:true,message: "请输入项目类型", trigger: 'blur' }],
+      remark: [{ required: true,message: "请输入项目备注", trigger: 'blur' }],
     })
-    let checkAccount=(rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('请输入账户'))
-      }
-      setTimeout(async () => {
-        if(check.value===true){
-          const {data} = await get(httpUrl+"/user/findByAccount",{account:value})
-          if (data===0) {
-            callback(new Error('已存在相同账户'))
+    const submit=async (formEl) => {
+      if (!formEl) return
+      formEl.validate(async (valid) => {
+        if (valid) {
+          const {code} = await post(httpUrl+"/project/add", form)
+          if (code === 200) {
+            ElMessage({
+              message: '操作成功',
+              type: 'success',
+            })
           } else {
-            callback()
+            ElMessage({
+              message: '操作失败',
+              type: 'error',
+            })
           }
-        }else {
-          callback()
-        }
-      }, 1000)
-    };
-    let checkAge=(rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('请输入年龄'))
-      }
-      setTimeout(() => {
-        if (!Number.isInteger(value)) {
-          callback(new Error('请输入数字'))
         } else {
-          if (value > 150) {
-            callback(new Error('年龄过大'))
-          } else {
-            callback()
-          }
+          ElMessage({
+            message: '操作失败',
+            type: 'error',
+          })
+          return false
         }
-      }, 1000)
-    };
-    let checkPhone=(rule, value, callback) => {
-      if (!value) {
-        return callback(new Error('请输入电话号码'))
-      }
-      setTimeout(() => {
-        if (value.length > 18) {
-          callback(new Error('电话号码过长'))
-        } else {
-          callback()
-        }
-      }, 1000)
-    };
+      })
+    }
     return{
       form,
       formLabelWidth,
       rules,
       check,
-      userStoreVar
+      userStoreVar,
+      ruleFormRef,
+      submit
     }
   }
 }

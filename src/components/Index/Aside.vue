@@ -12,12 +12,12 @@
           <h4 v-if="!sidebarStoreVar.collapse">案例库管理</h4>
         </template>
         <el-menu-item-group title="新建">
-          <el-menu-item index="1-1">
+          <el-menu-item index="1-1" @click="goToAddCase()">
             <el-icon><DocumentAdd /></el-icon>
             新建案例项目
           </el-menu-item>
         </el-menu-item-group>
-        <el-menu-item-group title="修改">
+        <el-menu-item-group title="修改" @click="goToModifyCase()">
           <el-menu-item index="1-2">
             <el-icon><DocumentDelete /></el-icon>
             修改项目信息
@@ -97,6 +97,7 @@
 <script>
 import {sidebarStore} from "@/store/sidebarStore";
 import {userStore} from "@/store/userStore";
+import router from "@/router/router";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Aside",
@@ -107,9 +108,17 @@ export default {
   setup(props,context){
     let sidebarStoreVar=sidebarStore()
     let useStore=userStore()
+    const goToAddCase=async () => {
+      await router.push({path: "/index/addCase"})
+    }
+    const goToModifyCase=async ()=>{
+      await router.push({path: "/index/modifyCase"})
+    }
     return{
       sidebarStoreVar,
       useStore,
+      goToAddCase,
+      goToModifyCase
     }
   }
 }

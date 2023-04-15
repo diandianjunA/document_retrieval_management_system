@@ -57,7 +57,7 @@ export default {
               message: '登陆成功',
               type: 'success',
             })
-            await router.push({path: "/index/main"})
+            await router.push({path: "/index/modifyCase"})
           }
         } else {
           ElMessage({
