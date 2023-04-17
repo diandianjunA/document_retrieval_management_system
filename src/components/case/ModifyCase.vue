@@ -29,8 +29,8 @@
         </template>
       </el-dialog>
     </div>
-    <el-table :data="projectData.list" style="width: 100%">
-      <el-table-column fixed prop="id" label="Id" width="220px"/>
+    <el-table :data="projectData.list" style="width: 100%" border="border">
+      <el-table-column fixed prop="id" label="项目Id" width="220px"/>
       <el-table-column prop="name" label="项目名称"/>
       <el-table-column prop="category" label="项目类型"/>
       <el-table-column prop="remark" label="项目简介">
@@ -50,6 +50,7 @@
         :pager-count="navSize"
         class="mt-4"
         v-model:current-page="currentPage"
+        @current-change="search"
         style="margin-top: 10px;justify-content: center;"
     />
   </div>
@@ -65,7 +66,7 @@ export default {
   name: "ModifyCase",
   setup(){
     const httpUrl='http://localhost:8070'
-    const pageSize=10
+    const pageSize=5
     const navSize=5
     let currentPage=ref(1)
     let searchValue=ref("")
@@ -196,7 +197,7 @@ export default {
       handleEdit,
       handleDelete,
       pageSize,
-      navSize
+      navSize,
     }
   }
 }

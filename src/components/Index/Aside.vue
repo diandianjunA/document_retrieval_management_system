@@ -24,7 +24,7 @@
           </el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="上传与下载">
-          <el-menu-item index="1-3">
+          <el-menu-item index="1-3" @click="goToUpload()">
             <el-icon><Top /></el-icon>
             上传案例资料
           </el-menu-item>
@@ -114,11 +114,15 @@ export default {
     const goToModifyCase=async ()=>{
       await router.push({path: "/index/modifyCase"})
     }
+    const goToUpload=async ()=>{
+      await router.push({path: "/index/uploadMaterial"})
+    }
     return{
       sidebarStoreVar,
       useStore,
       goToAddCase,
-      goToModifyCase
+      goToModifyCase,
+      goToUpload
     }
   }
 }

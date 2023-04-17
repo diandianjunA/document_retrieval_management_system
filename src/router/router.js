@@ -3,6 +3,7 @@ import index from "@/components/index";
 import Login from "@/components/Login";
 import AddCase from "@/components/case/AddCase";
 import ModifyCase from "@/components/case/ModifyCase";
+import UploadMaterial from "@/components/case/UploadMaterial";
 const routes = [
     {
         path: "/",
@@ -23,6 +24,10 @@ const routes = [
             {
                 path: "modifyCase",
                 component: ModifyCase
+            },
+            {
+                path: "uploadMaterial",
+                component: UploadMaterial
             }
         ]
     }

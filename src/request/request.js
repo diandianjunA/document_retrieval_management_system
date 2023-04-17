@@ -32,3 +32,13 @@ export function post(url, params) {
             })
     });
 }
+
+export function postWithConfig(url, params,config) {
+    return new Promise((resolve, reject) => {
+        axios.post(url, params,config).then(res => {
+            resolve(res.data);
+        }).catch(err => {
+            reject(err.data)
+        })
+    });
+}
