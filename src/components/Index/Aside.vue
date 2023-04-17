@@ -26,16 +26,6 @@
         <el-menu-item-group title="上传与下载">
           <el-menu-item index="1-3" @click="goToUpload()">
             <el-icon><Top /></el-icon>
-            上传案例资料
-          </el-menu-item>
-          <el-menu-item index="1-4">
-            <el-icon><Bottom /></el-icon>
-            下载案例资料
-          </el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group title="浏览">
-          <el-menu-item index="1-5">
-            <el-icon><Folder /></el-icon>
             案例资料列表
           </el-menu-item>
         </el-menu-item-group>
