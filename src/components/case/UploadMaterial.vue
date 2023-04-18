@@ -55,10 +55,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <form method="get" action="" style="display: none" id="getForm">
-      <input name="location" type="text" id="fileLocation">
-      <input type="submit" id="formSubmit">
-    </form>
     <el-pagination
         background
         :page-size="pageSize"
@@ -79,6 +75,8 @@ import {get} from "@/request/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {userStore} from "@/store/userStore";
 import axios from '@/request/http'
+import {documentStore} from "@/store/documentStore";
+import router from "@/router/router";
 
 export default {
   name: "UploadMaterial",
@@ -95,6 +93,7 @@ export default {
     const project=ref()
     const formLabelWidth='140px'
     const userStoreVar=userStore()
+    const documentStoreVar=documentStore()
     const form = reactive({
       name: '',
       projectId: '',
@@ -166,12 +165,18 @@ export default {
       })
     }
     const handleView=(row)=>{
-      let getForm=document.getElementById("getForm")
-      getForm.setAttribute("action",httpUrl+"/material/getContent")
-      let input=document.getElementById("fileLocation")
-      input.value=row.location
-      let submit = document.getElementById("formSubmit")
-      submit.click()
+      axios({
+        url: httpUrl+"/material/getContent",
+        method: 'get',
+        responseType: 'arraybuffer',
+        params:{
+          location:row.location
+        }
+      }).then(async res => {
+        const blob = new Blob([res.data]);
+        documentStoreVar.construct(blob)
+        await router.push({path: "/index/documentPreview"})
+      })
     }
     const handleDownload=async (row) => {
       // let getForm=document.getElementById("getForm")
@@ -194,7 +199,8 @@ export default {
         // 将流文件写入a标签的href属性值
         a.href = URL.createObjectURL(blob);
         //设置文件名
-        a.download = res.headers.filename
+        const str = row.location.split("/");
+        a.download = str[str.length - 1]
         // 隐藏a标签
         a.style.display = "none";
         // 将a标签追加到文档对象中
@@ -272,7 +278,7 @@ export default {
       httpUrl,
       submit,
       rules,
-      handleDownload
+      handleDownload,
     }
   }
 }

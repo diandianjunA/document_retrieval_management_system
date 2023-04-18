@@ -4,6 +4,7 @@ import Login from "@/components/Login";
 import AddCase from "@/components/case/AddCase";
 import ModifyCase from "@/components/case/ModifyCase";
 import UploadMaterial from "@/components/case/UploadMaterial";
+import DocumentPreview from "@/components/case/DocumentPreview";
 const routes = [
     {
         path: "/",
@@ -28,6 +29,10 @@ const routes = [
             {
                 path: "uploadMaterial",
                 component: UploadMaterial
+            },
+            {
+                path: "documentPreview",
+                component: DocumentPreview
             }
         ]
     }
