@@ -111,7 +111,7 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   setup(){
-    const httpUrl="http://localhost:8070"
+    const httpUrl="http://localhost:8080/"
     document.querySelector('body').setAttribute('style','background-color: rgb(25,75,129)')
     onBeforeUnmount(()=>{
       document.querySelector('body').removeAttribute('style')

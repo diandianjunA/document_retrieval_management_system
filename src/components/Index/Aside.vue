@@ -14,7 +14,7 @@
         <el-menu-item-group title="新建">
           <el-menu-item index="1-1" @click="goToAddCase()">
             <el-icon><DocumentAdd /></el-icon>
-            新建案例项目
+            新增案例项目
           </el-menu-item>
         </el-menu-item-group>
         <el-menu-item-group title="修改" @click="goToModifyCase()">
@@ -59,23 +59,19 @@
           <el-icon><Printer /></el-icon>
           <h4 v-if="!sidebarStoreVar.collapse">新方案管理</h4>
         </template>
-        <el-menu-item index="4-1">
+        <el-menu-item index="4-1" @click="goToSelectGenerateProg()">
           <el-icon><Reading /></el-icon>
           方案选型分析
         </el-menu-item>
-        <el-menu-item index="4-2">
+        <el-menu-item index="4-2" @click="goToSelectonResults()">
           <el-icon><DocumentCopy /></el-icon>
-          方案生成
+          查看选型结果
         </el-menu-item>
-        <el-menu-item index="4-3">
+        <el-menu-item index="4-3" @click="goToProgrammeManage()">
           <el-icon><DataLine /></el-icon>
-          方案调整
+          方案管理
         </el-menu-item>
         <el-menu-item index="4-4">
-          <el-icon><DocumentChecked /></el-icon>
-          方案保存
-        </el-menu-item>
-        <el-menu-item index="4-5">
           <el-icon><CopyDocument /></el-icon>
           方案导出
         </el-menu-item>
@@ -107,12 +103,24 @@ export default {
     const goToUpload=async ()=>{
       await router.push({path: "/index/uploadMaterial"})
     }
+    const goToSelectonResults=async ()=>{
+      await router.push({path: "/index/selectionResults"})
+    }
+    const goToProgrammeManage=async ()=>{
+      await router.push({path: "/index/programmeManage"})
+    }
+    const goToSelectGenerateProg=async ()=>{
+      await router.push({path: "/index/SelectGenerateProg"})
+    }
     return{
       sidebarStoreVar,
       useStore,
       goToAddCase,
       goToModifyCase,
-      goToUpload
+      goToUpload,
+      goToSelectonResults,
+      goToProgrammeManage,
+      goToSelectGenerateProg
     }
   }
 }
