@@ -81,7 +81,7 @@ import router from "@/router/router";
 export default {
   name: "UploadMaterial",
   setup(){
-    const httpUrl='http://localhost:8070'
+    const httpUrl='http://www.diandianjun.com.cn:8070'
     const pageSize=10
     const navSize=5
     let currentPage=ref(1)

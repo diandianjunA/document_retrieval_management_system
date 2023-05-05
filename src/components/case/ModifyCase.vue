@@ -65,7 +65,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 export default {
   name: "ModifyCase",
   setup(){
-    const httpUrl='http://localhost:8070'
+    const httpUrl='http://www.diandianjun.com.cn:8070'
     const pageSize=5
     const navSize=5
     let currentPage=ref(1)

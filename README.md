@@ -1,6 +1,7 @@
 # 文档检索管理系统
 
 ## 系统概述
+
 本系统是一个基于云端的文档资料统一管理平台，实现文档的集中管
 理和知识元的统一归档。在该系统中，用户可以方便地上传、下载和共享历史案
 例资料，包括各种技术文档、相关规范等。系统支持帮助用户快速查找和检索所
@@ -9,79 +10,85 @@
 目时，通过和历史案例资料的相似度对比，自动生成技术方案。
 
 ## 系统模块
+
 - 用户登录模块
 
 ## 初始化操作
-main.js
-```javascript
-import { createApp } from 'vue'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import App from './App.vue'
-import "@/assets/common.css"
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import {createPinia} from "pinia";
-import router from "@/router/router";
-import piniaPluginPersist from 'pinia-plugin-persist'
 
-const app = createApp(App)
+main.js
+
+```javascript
+import { createApp } from "vue";
+import ElementPlus from "element-plus";
+import "element-plus/dist/index.css";
+import App from "./App.vue";
+import "@/assets/common.css";
+import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { createPinia } from "pinia";
+import router from "@/router/router";
+import piniaPluginPersist from "pinia-plugin-persist";
+
+const app = createApp(App);
 //添加路由
-app.use(router)
+app.use(router);
 //添加elementUI组件
-app.use(ElementPlus)
+app.use(ElementPlus);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
+  app.component(key, component);
 }
 //添加pinia数据仓库
-const pinia = createPinia()
-pinia.use(piniaPluginPersist)
-app.use(pinia)
-app.mount('#app')
+const pinia = createPinia();
+pinia.use(piniaPluginPersist);
+app.use(pinia);
+app.mount("#app");
 ```
+
 router.js
+
 ```javascript
 import { createRouter, createWebHashHistory } from "vue-router";
 import index from "@/components/index";
 import Login from "@/components/Login";
-const routes = [
-    
-];
+const routes = [];
 
 const router = createRouter({
-    history: createWebHashHistory(),
-    routes,
+  history: createWebHashHistory(),
+  routes,
 });
 
 export default router;
 ```
 
 ## 用户登录模块
-### 创建userStore用于存储用户信息
-```javascript
-import {defineStore} from 'pinia'
-import {reactive} from "vue";
 
-export const userStore=defineStore("userStore",{
-    state: ()=>{
-        return {
-            user: reactive({})
-        };
+### 创建 userStore 用于存储用户信息
+
+```javascript
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+
+export const userStore = defineStore("userStore", {
+  state: () => {
+    return {
+      user: reactive({}),
+    };
+  },
+  // 开启数据缓存 若 需要state 中的变量页面刷新数据缓存 需要调用 actions 中的方法
+  actions: {
+    construct(user) {
+      this.user = user;
     },
-    // 开启数据缓存 若 需要state 中的变量页面刷新数据缓存 需要调用 actions 中的方法
-    actions:{
-        construct(user){
-            this.user=user
-        }
-    },
-    persist: {
-        enabled: true, // 开启数据缓存
-    }
-})
+  },
+  persist: {
+    enabled: true, // 开启数据缓存
+  },
+});
 ```
 
 ### 用户登录界面创建
 
 Login.vue
+
 ```javascript
 <template>
   <div class="login">
@@ -111,7 +118,7 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Login",
   setup(){
-    const httpUrl="http://localhost:8070"
+    const httpUrl="http://www.diandianjun.com.cn:8070"
     document.querySelector('body').setAttribute('style','background-color: rgb(25,75,129)')
     onBeforeUnmount(()=>{
       document.querySelector('body').removeAttribute('style')
@@ -183,16 +190,18 @@ export default {
   }
 </style>
 ```
+
 ### 路由注册
+
 ```javascript
-    const routes = [
-    {
-        path: "/",
-        redirect: "/login"
-    },
-    {
-        path: "/login",
-        component: Login
-    }
+const routes = [
+  {
+    path: "/",
+    redirect: "/login",
+  },
+  {
+    path: "/login",
+    component: Login,
+  },
 ];
 ```
