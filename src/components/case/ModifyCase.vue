@@ -15,7 +15,7 @@
           <el-form-item label="项目类型" :label-width="formLabelWidth" prop="name">
             <el-input v-model="form.category"/>
           </el-form-item>
-          <el-form-item label="项目备注" :label-width="formLabelWidth" prop="password">
+          <el-form-item label="项目简介" :label-width="formLabelWidth" prop="password">
             <textarea v-model="form.remark" style="width: 380px;height: 100px;padding:10px;font-size: 15px;resize: none"></textarea>
           </el-form-item>
         </el-form>

@@ -7,7 +7,9 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import {createPinia} from "pinia";
 import router from "@/router/router";
 import piniaPluginPersist from 'pinia-plugin-persist'
+import * as echarts from "echarts";
 const app = createApp(App)
+app.config.globalProperties.$echarts = echarts
 //添加路由
 app.use(router)
 //添加elementUI组件

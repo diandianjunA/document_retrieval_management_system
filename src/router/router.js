@@ -5,6 +5,9 @@ import AddCase from "@/components/case/AddCase";
 import ModifyCase from "@/components/case/ModifyCase";
 import UploadMaterial from "@/components/case/UploadMaterial";
 import DocumentPreview from "@/components/case/DocumentPreview";
+import SelectionResults from "@/components/case/SelectionResults";
+import ProgrammeManage from "@/components/case/ProgrammeManage";
+import SelectGenerateProg from "@/components/case/SelectGenerateProg";
 const routes = [
     {
         path: "/",
@@ -33,6 +36,18 @@ const routes = [
             {
                 path: "documentPreview",
                 component: DocumentPreview
+            },
+            {
+                path: "selectionResults",
+                component: SelectionResults
+            },
+            {
+                path: "programmeManage",
+                component: ProgrammeManage
+            },
+            {
+                path: "selectGenerateProg",
+                component: SelectGenerateProg
             }
         ]
     }

@@ -1,5 +1,5 @@
 <template>
-  <h1 style="text-align: center;font-size: 40px;margin-top: 20px">新建案例项目</h1>
+  <h1 style="text-align: center;font-size: 40px;margin-top: 20px">新增案例项目</h1>
   <el-form :model="form" :rules="rules" ref="ruleFormRef" style="position:relative;height: 600px">
     <el-form-item label="项目名称" :label-width="formLabelWidth" prop="name" style="width: 380px;margin: 40px auto auto;">
       <el-input v-model="form.name"/>
