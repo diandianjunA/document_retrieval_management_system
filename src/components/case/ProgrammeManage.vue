@@ -55,17 +55,17 @@
       />
     </div>
   </template>
-  
+
   <script>
-  
+
   import {onMounted, reactive, ref} from "vue";
   import {get, post} from "@/request/request";
   import {ElMessage, ElMessageBox} from "element-plus";
-  
+
   export default {
     name: "ProgrammeManage",
     setup(){
-      const httpUrl='http://www.diandianjun.com.cn:8070'
+      const httpUrl='http://localhost:8070'
       const pageSize=5
       const navSize=5
       let currentPage=ref(1)
@@ -202,8 +202,7 @@
     }
   }
   </script>
-  
+
   <style scoped>
-  
+
   </style>
-  

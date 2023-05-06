@@ -48,7 +48,7 @@
           <h4 v-if="!sidebarStoreVar.collapse">文档查询</h4>
         </template>
         <el-menu-item-group title="查询">
-          <el-menu-item index="3-1">
+          <el-menu-item index="3-1" @click="goToFuzzySearch">
             <el-icon><FolderOpened /></el-icon>
             文档模糊查询
           </el-menu-item>
@@ -65,15 +65,11 @@
         </el-menu-item>
         <el-menu-item index="4-2" @click="goToSelectonResults()">
           <el-icon><DocumentCopy /></el-icon>
-          查看选型结果
+          方案生成
         </el-menu-item>
         <el-menu-item index="4-3" @click="goToProgrammeManage()">
           <el-icon><DataLine /></el-icon>
           方案管理
-        </el-menu-item>
-        <el-menu-item index="4-4">
-          <el-icon><CopyDocument /></el-icon>
-          方案导出
         </el-menu-item>
       </el-sub-menu>
     </el-menu>
@@ -112,6 +108,9 @@ export default {
     const goToSelectGenerateProg=async ()=>{
       await router.push({path: "/index/SelectGenerateProg"})
     }
+    const goToFuzzySearch=async ()=>{
+      await router.push({path: "/index/FuzzySearch"})
+    }
     return{
       sidebarStoreVar,
       useStore,
@@ -120,7 +119,8 @@ export default {
       goToUpload,
       goToSelectonResults,
       goToProgrammeManage,
-      goToSelectGenerateProg
+      goToSelectGenerateProg,
+      goToFuzzySearch
     }
   }
 }

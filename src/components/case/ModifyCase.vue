@@ -4,7 +4,7 @@
       <el-input v-model:model-value="searchValue" placeholder="请输入查询内容" suffix-icon="Search" style="width: 200px;margin: 5px" @keydown.enter="search"></el-input>
       <el-button @click="search" type="success">查询</el-button>
       <el-button @click="reset" type="primary">重置</el-button>
-      <el-dialog v-model="dialogFormVisible" title="新增员工" width="500px" @closed="resetForm">
+      <el-dialog v-model="dialogFormVisible" title="修改项目" width="500px" @closed="resetForm">
         <el-form :model="form" style="margin-right: 120px" ref="ruleFormRef" :rules="rules">
           <el-form-item label="项目Id" :label-width="formLabelWidth">
             <el-input v-model="form.id" disabled/>
@@ -65,7 +65,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
 export default {
   name: "ModifyCase",
   setup(){
-    const httpUrl='http://www.diandianjun.com.cn:8070'
+    const httpUrl='http://localhost:8070'
     const pageSize=5
     const navSize=5
     let currentPage=ref(1)

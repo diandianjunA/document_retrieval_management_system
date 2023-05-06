@@ -5,9 +5,11 @@ import AddCase from "@/components/case/AddCase";
 import ModifyCase from "@/components/case/ModifyCase";
 import UploadMaterial from "@/components/case/UploadMaterial";
 import DocumentPreview from "@/components/case/DocumentPreview";
+import FuzzySearch from "@/components/case/FuzzySearch";
 import SelectionResults from "@/components/case/SelectionResults";
 import ProgrammeManage from "@/components/case/ProgrammeManage";
 import SelectGenerateProg from "@/components/case/SelectGenerateProg";
+import SchemeTable from "@/components/case/SchemeTable";
 const routes = [
     {
         path: "/",
@@ -48,6 +50,14 @@ const routes = [
             {
                 path: "selectGenerateProg",
                 component: SelectGenerateProg
+            },
+            {
+                path: "FuzzySearch",
+                component: FuzzySearch
+            },
+            {
+                path: "SchemeTable",
+                component: SchemeTable
             }
         ]
     }

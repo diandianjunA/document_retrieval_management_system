@@ -81,7 +81,7 @@ import router from "@/router/router";
 export default {
   name: "UploadMaterial",
   setup(){
-    const httpUrl='http://www.diandianjun.com.cn:8070'
+    const httpUrl='http://localhost:8070'
     const pageSize=10
     const navSize=5
     let currentPage=ref(1)
@@ -132,11 +132,14 @@ export default {
     const reset=()=>{
       searchValue.value=""
       project.value=""
+      form.name=''
+      form.file=''
+      form.projectId=''
       primarySearch()
     }
     const handleDelete = async (row) => {
       ElMessageBox.confirm(
-          '您确定要删除该项目吗',
+          '您确定要删除该资料吗',
           '请确认',
           {
             confirmButtonText: '确定',
@@ -238,7 +241,7 @@ export default {
               message: '操作成功',
               type: 'success',
             })
-            await primarySearch()
+            reset()
           } else {
             ElMessage({
               message: '操作失败',

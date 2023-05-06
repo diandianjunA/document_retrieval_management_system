@@ -23,7 +23,7 @@ import {post} from "@/request/request";
 export default {
   name: "AddCase",
   setup(){
-    const httpUrl="http://www.diandianjun.com.cn:8070"
+    const httpUrl="http://localhost:8070"
     const check=ref(true)
     const userStoreVar=userStore()
     const ruleFormRef = ref('')
