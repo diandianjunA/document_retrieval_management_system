@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import {ref} from "vue"
 import { ArrowDown } from '@element-plus/icons-vue'
 import {sidebarStore} from "@/store/sidebarStore";
 import {userStore} from "@/store/userStore";
@@ -46,7 +45,6 @@ export default {
   },
   // eslint-disable-next-line no-unused-vars
   setup(props,context){
-    let circleUrl=ref("http://www.diandianjun.com.cn:8080/resource/blog/dora1.jpg")
     let sidebarStoreVar=sidebarStore()
     let userStoreVar=userStore()
     let collapse=()=> {
@@ -79,7 +77,6 @@ export default {
           })
     };
     return{
-      circleUrl,
       collapse,
       userStoreVar,
       quit

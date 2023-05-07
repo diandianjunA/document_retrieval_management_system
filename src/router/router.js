@@ -10,6 +10,7 @@ import SelectionResults from "@/components/case/SelectionResults";
 import ProgrammeManage from "@/components/case/ProgrammeManage";
 import SelectGenerateProg from "@/components/case/SelectGenerateProg";
 import SchemeTable from "@/components/case/SchemeTable";
+import SimilarityAnalyze from "@/components/case/SimilarityAnalyze";
 const routes = [
     {
         path: "/",
@@ -58,6 +59,10 @@ const routes = [
             {
                 path: "SchemeTable",
                 component: SchemeTable
+            },
+            {
+                path: "SimilarityAnalyze",
+                component: SimilarityAnalyze
             }
         ]
     }

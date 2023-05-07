@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import {onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {get} from "@/request/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {userStore} from "@/store/userStore";
@@ -81,7 +81,8 @@ import router from "@/router/router";
 export default {
   name: "UploadMaterial",
   setup(){
-    const httpUrl='http://localhost:8070'
+    const {proxy}=getCurrentInstance();
+    const httpUrl=proxy.$key
     const pageSize=10
     const navSize=5
     let currentPage=ref(1)
@@ -101,6 +102,8 @@ export default {
     })
     onMounted(async () => {
       await primarySearch()
+      const {data} = await get(httpUrl + "/project/getAll", {})
+      projectData.value = data
     })
     const search=async () => {
       const {data} = await get(httpUrl+"/material/getPaged", {
@@ -121,12 +124,6 @@ export default {
           navSize: navSize,
         })
         materialData.value = data
-      }
-      {
-        const {data} = await get(httpUrl + "/project/getAll", {
-
-        })
-        projectData.value = data
       }
     }
     const reset=()=>{

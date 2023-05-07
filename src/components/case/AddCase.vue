@@ -8,14 +8,15 @@
       <el-input v-model="form.category"/>
     </el-form-item>
     <el-form-item label="项目备注" :label-width="formLabelWidth" prop="remark" style="width: 380px;margin: 40px auto auto">
-      <textarea v-model="form.remark" style="width: 380px;height: 100px;padding:10px;font-size: 15px;resize: none"></textarea>
+      <textarea maxlength="200" onchange="this.value=this.value.substring(0, 200)" οnkeydοwn="this.value=this.value.substring(0, 200)"
+                onkeyup="this.value=this.value.substring(0, 200)" v-model="form.remark" style="width: 380px;height: 100px;padding:10px;font-size: 15px;resize: none"></textarea>
     </el-form-item>
     <el-button type="primary" @click="submit(ruleFormRef)" style="position: absolute;left: 50%;top: 280px;margin-left: -28px;">提交</el-button>
   </el-form>
 </template>
 
 <script>
-import {reactive, ref} from "vue";
+import {getCurrentInstance, reactive, ref} from "vue";
 import {userStore} from "@/store/userStore";
 import {ElMessage} from "element-plus";
 import {post} from "@/request/request";
@@ -23,7 +24,8 @@ import {post} from "@/request/request";
 export default {
   name: "AddCase",
   setup(){
-    const httpUrl="http://localhost:8070"
+    const {proxy}=getCurrentInstance();
+    const httpUrl=proxy.$key
     const check=ref(true)
     const userStoreVar=userStore()
     const ruleFormRef = ref('')

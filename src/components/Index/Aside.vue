@@ -35,7 +35,7 @@
           <el-icon><Iphone /></el-icon>
           <h4 v-if="!sidebarStoreVar.collapse">相似度计算</h4>
         </template>
-        <el-menu-item-group title="计算">
+        <el-menu-item-group title="计算" @click="goToSimilarityAnalyze">
           <el-menu-item index="2-1">
             <el-icon><Monitor /></el-icon>
             计算案例相似度
@@ -111,6 +111,9 @@ export default {
     const goToFuzzySearch=async ()=>{
       await router.push({path: "/index/FuzzySearch"})
     }
+    const goToSimilarityAnalyze=async ()=>{
+      await router.push({path: "/index/SimilarityAnalyze"})
+    }
     return{
       sidebarStoreVar,
       useStore,
@@ -120,7 +123,8 @@ export default {
       goToSelectonResults,
       goToProgrammeManage,
       goToSelectGenerateProg,
-      goToFuzzySearch
+      goToFuzzySearch,
+      goToSimilarityAnalyze
     }
   }
 }

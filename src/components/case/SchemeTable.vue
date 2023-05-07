@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {userStore} from "@/store/userStore";
 import {schemeStore} from "@/store/schemeStore";
 import {get} from "@/request/request";
@@ -31,7 +31,8 @@ import {get} from "@/request/request";
 export default {
   name: "SchemeTable",
   setup(){
-    const httpUrl="http://localhost:8070"
+    const {proxy}=getCurrentInstance();
+    const httpUrl=proxy.$key
     const pageSize=10
     const navSize=5
     let currentPage=ref(1)

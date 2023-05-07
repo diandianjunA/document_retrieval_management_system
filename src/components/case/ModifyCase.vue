@@ -58,14 +58,15 @@
 
 <script>
 
-import {onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {get, post} from "@/request/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 export default {
   name: "ModifyCase",
   setup(){
-    const httpUrl='http://localhost:8070'
+    const {proxy}=getCurrentInstance();
+    const httpUrl=proxy.$key
     const pageSize=5
     const navSize=5
     let currentPage=ref(1)

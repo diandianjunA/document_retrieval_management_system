@@ -46,13 +46,14 @@
             </el-select>
           </el-form-item>
           <el-form-item label="方案内容" :label-width="formLabelWidth" prop="summary" style="width: 380px;">
-            <textarea v-model="form.summary" style="width: 380px;height: 100px;font-size: 15px;resize: none;padding: 10px"></textarea>
+            <textarea maxlength="200" onchange="this.value=this.value.substring(0, 200)" οnkeydοwn="this.value=this.value.substring(0, 200)"
+                      onkeyup="this.value=this.value.substring(0, 200)" v-model="form.summary" style="width: 380px;height: 100px;font-size: 15px;resize: none;padding: 10px"></textarea>
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="generate">自动生成方案内容</el-button>
-            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button @click="dialogTableVisible = false">取消</el-button>
             <el-button type="primary" @click="submit(ruleFormRef)">
               确认
             </el-button>
@@ -75,7 +76,7 @@
 
   <script>
 
-  import {onMounted, reactive, ref} from "vue";
+  import {getCurrentInstance, onMounted, reactive, ref} from "vue";
   import {get} from "@/request/request";
   import {ElMessage} from "element-plus";
   import {post} from "@/request/request";
@@ -84,7 +85,8 @@
   export default {
     name: "ModifyCase",
     setup(){
-      const httpUrl='http://localhost:8070'
+      const {proxy}=getCurrentInstance();
+      const httpUrl=proxy.$key
       const pageSize=20
       const navSize=5
       let currentPage=ref(1)

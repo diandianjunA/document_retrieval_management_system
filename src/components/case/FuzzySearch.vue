@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {get} from "@/request/request";
 import Material from "@/components/case/Material";
 import axios from "@/request/http";
@@ -25,7 +25,8 @@ export default {
   name: "FuzzySearch",
   components: {Material},
   setup(){
-    const httpUrl='http://localhost:8070'
+    const {proxy}=getCurrentInstance();
+    const httpUrl=proxy.$key
     const pageSize=3
     let currentPage=ref(1)
     let searchValue=ref("")
