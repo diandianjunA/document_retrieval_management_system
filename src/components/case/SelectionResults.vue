@@ -18,8 +18,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog v-model="dialogTableVisible" title="result" width="550px">
-        <el-form :model="form" style="margin-left: 50px" ref="ruleFormRef" :rules="rules">
+      <el-dialog v-model="dialogTableVisible" title="方案内容填写" width="550px">
+        <el-form :model="form" style="margin-left: 50px" ref="ruleFormRef" :rules="rules" v-loading="loading"
+                 element-loading-text="Loading..."
+                 :element-loading-svg="svg"
+                 class="custom-loading-svg"
+                 element-loading-svg-view-box="-10, -10, 50, 50">
           <el-form-item label="方案名" :label-width="formLabelWidth" prop="name">
             <el-col :span="16">
               <el-input v-model="form.name"/>
@@ -103,6 +107,17 @@
         materialId:'',
         summary: '',
       })
+      const loading = ref(false)
+      const svg = `
+        <path class="path" d="
+          M 30 15
+          L 28 17
+          M 25.61 25.61
+          A 15 15, 0, 0, 1, 15 30
+          A 15 15, 0, 1, 1, 27.99 7.5
+          L 15 15
+        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
+      `
       onMounted(async () => {
         await primarySearch()
       })
@@ -176,6 +191,7 @@
             type: 'error',
           })
         } else {
+          loading.value=true
           const {code,data} = await get(httpUrl + "/scheme/generate", {
             materialId:form.materialId
           })
@@ -191,6 +207,7 @@
               type: 'error',
             })
           }
+          loading.value=false
         }
       }
       const exportScheme=async (row) => {
@@ -236,11 +253,16 @@
         submit,
         generate,
         reset,
-        exportScheme
+        exportScheme,
+        loading,
+        svg
       }
     }
   }
   </script>
 
   <style scoped>
+  .example-showcase .el-loading-mask {
+    z-index: 9;
+  }
   </style>
