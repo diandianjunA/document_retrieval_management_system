@@ -53,6 +53,7 @@
             <textarea maxlength="200" onchange="this.value=this.value.substring(0, 200)" οnkeydοwn="this.value=this.value.substring(0, 200)"
                       onkeyup="this.value=this.value.substring(0, 200)" v-model="form.summary" style="width: 380px;height: 100px;font-size: 15px;resize: none;padding: 10px"></textarea>
           </el-form-item>
+          <el-input-number v-model="length" :min="12" :max="255" style="margin-left: 150px"/>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
@@ -107,6 +108,7 @@
         materialId:'',
         summary: '',
       })
+      const length=ref(15)
       const loading = ref(false)
       const svg = `
         <path class="path" d="
@@ -190,10 +192,16 @@
             message: '请选择资料',
             type: 'error',
           })
+        }else if(length.value===null||length.value===''){
+          ElMessage({
+            message: '请选择生成资料的长度',
+            type: 'error',
+          })
         } else {
           loading.value=true
           const {code,data} = await get(httpUrl + "/scheme/generate", {
-            materialId:form.materialId
+            materialId:form.materialId,
+            length:length.value
           })
           if (code === 200) {
             ElMessage({
@@ -255,7 +263,8 @@
         reset,
         exportScheme,
         loading,
-        svg
+        svg,
+        length
       }
     }
   }
