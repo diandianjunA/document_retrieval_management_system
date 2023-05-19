@@ -16,7 +16,7 @@
 <script>
 import {getCurrentInstance, onMounted, ref, watch} from "vue";
 import {get} from "@/request/request";
-import Material from "@/components/case/Material";
+import Material from "@/components/component/Material";
 import axios from "@/request/http";
 import router from "@/router/router";
 import {documentStore} from "@/store/documentStore";

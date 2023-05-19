@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import Header from "@/components/Index/Header";
+import Header from "@/components/component/Header";
 import {sidebarStore} from "@/store/sidebarStore";
 import {nextTick, onMounted, provide, reactive, ref} from "vue";
 

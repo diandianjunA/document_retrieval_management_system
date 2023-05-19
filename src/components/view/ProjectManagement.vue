@@ -61,7 +61,7 @@
     <div style="position: relative;">
       <div style="border: 1px solid #ebeef5;width: 750px;margin-left: 600px"></div>
       <div v-for="(item,index) in projectData.list" :key=index>
-        <div class="projectItem">
+        <div class="projectItem" @click="jump">
           <h2>{{item.name}}</h2>
           <h4 style="margin-top: 10px;margin-bottom: 10px">{{item.category}}</h4>
           <textarea v-model="item.remark"
@@ -274,12 +274,13 @@ export default {
         })
       })
     }
-    const jump=(item)=>{
-      projectStoreVar.project.id=item.id
-      projectStoreVar.project.name=item.name
-      projectStoreVar.project.category=item.category
-      projectStoreVar.project.remark=item.remark
-      projectStoreVar.project.userId=item.userId
+    const jump=async (item) => {
+      projectStoreVar.project.id = item.id
+      projectStoreVar.project.name = item.name
+      projectStoreVar.project.category = item.category
+      projectStoreVar.project.remark = item.remark
+      projectStoreVar.project.userId = item.userId
+      await router.push({path: '/index/ProjectWorkspace'})
     }
     const more=async () => {
       dialogTableVisible.value = true

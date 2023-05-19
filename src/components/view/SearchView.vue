@@ -35,7 +35,7 @@ import {getCurrentInstance, onMounted, ref} from "vue";
 import {get} from "@/request/request";
 import {ElMessage} from "element-plus";
 import {searchStore} from "@/store/searchStore";
-import Material from "@/components/case/Material";
+import Material from "@/components/component/Material";
 
 export default {
   name: "SearchView",

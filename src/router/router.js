@@ -1,18 +1,20 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import index from "@/components/index";
 import Login from "@/components/Login";
-import AddCase from "@/components/case/AddCase";
+import AddCase from "@/components/view/AddCase";
 import ModifyCase from "@/components/old/ModifyCase";
 import UploadMaterial from "@/components/old/UploadMaterial";
-import DocumentPreview from "@/components/case/DocumentPreview";
+import DocumentPreview from "@/components/view/DocumentPreview";
 import FuzzySearch from "@/components/old/FuzzySearch";
 import SelectionResults from "@/components/old/SelectionResults";
 import ProgrammeManage from "@/components/old/ProgrammeManage";
 import SelectGenerateProg from "@/components/old/SelectGenerateProg";
 import SchemeTable from "@/components/old/SchemeTable";
 import SimilarityAnalyze from "@/components/old/SimilarityAnalyze";
-import ProjectManagement from "@/components/case/ProjectManagement";
-import SearchView from "@/components/case/SearchView";
+import ProjectManagement from "@/components/view/ProjectManagement";
+import SearchView from "@/components/view/SearchView";
+import ProjectWorkspace from "@/components/view/ProjectWorkspace";
+import NewScheme from "@/components/view/NewScheme";
 const routes = [
     {
         path: "/",
@@ -74,6 +76,14 @@ const routes = [
                 path: "SearchView",
                 component: SearchView
             },
+            {
+                path: "ProjectWorkspace",
+                component: ProjectWorkspace
+            },
+            {
+                path: "NewScheme",
+                component: NewScheme
+            }
         ]
     }
 ];

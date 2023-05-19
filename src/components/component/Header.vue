@@ -15,7 +15,7 @@
         </el-input>
       </div>
       <el-menu-item style="margin-left: 400px" index="1" @click="goToProjectManagement">历史项目管理</el-menu-item>
-      <el-menu-item index="2">新方案生成</el-menu-item>
+      <el-menu-item index="2" @click="goToNewScheme">新方案生成</el-menu-item>
       <el-dropdown style="position:absolute;top: 20px;right: 40px">
             <span class="el-dropdown-link" style="color: black;">
               {{ userStoreVar.user.userName }}
@@ -102,6 +102,9 @@ export default {
     let jump=async ()=>{
       await router.push({path: "/index/ProjectManagement"})
     }
+    const goToNewScheme=async () => {
+      await router.push({path: "/index/NewScheme"})
+    }
     return{
       activeIndex,
       userStoreVar,
@@ -110,7 +113,8 @@ export default {
       search,
       Search,
       goToProjectManagement,
-      jump
+      jump,
+      goToNewScheme
     }
   }
 }
