@@ -34,8 +34,8 @@ export default {
 <style scoped>
 .material {
   position: relative;
-  width: 880px;
-  height: 160px;
+  width: 900px;
+  height: 170px;
   margin: 20px;
   background-color: #FFFFFF;
   border-radius: 25px;
@@ -43,8 +43,8 @@ export default {
 }
 
 .cover {
-  width: 880px;
-  height: 160px;
+  width: 900px;
+  height: 170px;
   margin: 20px;
 }
 
