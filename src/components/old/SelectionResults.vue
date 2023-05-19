@@ -58,7 +58,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="generate">自动生成方案内容</el-button>
-            <el-button @click="dialogTableVisible = false">取消</el-button>
+            <el-button @click="closeForm">取消</el-button>
             <el-button type="primary" @click="submit(ruleFormRef)">
               确认
             </el-button>
@@ -126,6 +126,13 @@
       const reset=()=>{
         searchValue.value=""
         primarySearch()
+      }
+      const resetForm=()=>{
+        form.id=''
+        form.name=''
+        form.summary=''
+        form.projectId=''
+        form.materialId=''
       }
       const search=async () => {
         const {data} = await get(httpUrl+"/project/getPaged", {
@@ -244,6 +251,10 @@
           a.remove();
         })
       }
+      const closeForm=()=>{
+        dialogTableVisible.value = false
+        resetForm()
+      }
       return{
         searchValue,
         search,
@@ -264,7 +275,8 @@
         exportScheme,
         loading,
         svg,
-        length
+        length,
+        closeForm
       }
     }
   }

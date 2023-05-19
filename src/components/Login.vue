@@ -3,10 +3,10 @@
     <div class="box">
       <h2 style="margin: 80px auto;font-weight: 400;color: #3d5245;">登录</h2>
       <el-form :model="form" label-width="120px" class="pos" ref="formEl" :rules="rules">
-        <el-form-item label="账号" class="item">
+        <el-form-item label="账号" class="item" prop="userName">
           <el-input v-model="form.userName" />
         </el-form-item>
-        <el-form-item label="密码" class="item">
+        <el-form-item label="密码" class="item" prop="password">
           <el-input type="password" v-model="form.password" />
         </el-form-item>
       </el-form>
@@ -58,7 +58,7 @@ export default {
               message: '登陆成功',
               type: 'success',
             })
-            await router.push({ path: "/index/modifyCase" })
+            await router.push({ path: "/index/ProjectManagement" })
           }
         } else {
           ElMessage({

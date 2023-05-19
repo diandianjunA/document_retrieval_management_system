@@ -7,14 +7,14 @@
     </div>
     <div>
       <div v-for="(item,index) in searchData" :key=index>
-        <Material :projectName="item.projectName" :content="item.content" style="margin: 20px 20px;float: left" @click="jump(item)"></Material>
+        <Material forceRender :key="timer" :projectName="item.name" :content="item.content" style="margin: 20px 20px;float: left" @click="jump(item)"></Material>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref, watch} from "vue";
 import {get} from "@/request/request";
 import Material from "@/components/case/Material";
 import axios from "@/request/http";
@@ -32,6 +32,10 @@ export default {
     let searchValue=ref("")
     const searchData=ref(0)
     const documentStoreVar=documentStore()
+    let timer;
+    watch(searchData,()=>{
+      timer=new Date().getTime()
+    })
     onMounted(async () => {
       await primarySearch()
     })
@@ -97,7 +101,8 @@ export default {
       reset,
       prePage,
       nextPage,
-      jump
+      jump,
+      timer
     }
   }
 }

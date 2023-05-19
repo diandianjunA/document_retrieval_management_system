@@ -241,7 +241,7 @@ export default {
             reset()
           } else {
             ElMessage({
-              message: '操作失败',
+              message: data.msg,
               type: 'error',
             })
           }

@@ -2,15 +2,17 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import index from "@/components/index";
 import Login from "@/components/Login";
 import AddCase from "@/components/case/AddCase";
-import ModifyCase from "@/components/case/ModifyCase";
-import UploadMaterial from "@/components/case/UploadMaterial";
+import ModifyCase from "@/components/old/ModifyCase";
+import UploadMaterial from "@/components/old/UploadMaterial";
 import DocumentPreview from "@/components/case/DocumentPreview";
-import FuzzySearch from "@/components/case/FuzzySearch";
-import SelectionResults from "@/components/case/SelectionResults";
-import ProgrammeManage from "@/components/case/ProgrammeManage";
-import SelectGenerateProg from "@/components/case/SelectGenerateProg";
-import SchemeTable from "@/components/case/SchemeTable";
-import SimilarityAnalyze from "@/components/case/SimilarityAnalyze";
+import FuzzySearch from "@/components/old/FuzzySearch";
+import SelectionResults from "@/components/old/SelectionResults";
+import ProgrammeManage from "@/components/old/ProgrammeManage";
+import SelectGenerateProg from "@/components/old/SelectGenerateProg";
+import SchemeTable from "@/components/old/SchemeTable";
+import SimilarityAnalyze from "@/components/old/SimilarityAnalyze";
+import ProjectManagement from "@/components/case/ProjectManagement";
+import SearchView from "@/components/case/SearchView";
 const routes = [
     {
         path: "/",
@@ -63,7 +65,15 @@ const routes = [
             {
                 path: "SimilarityAnalyze",
                 component: SimilarityAnalyze
-            }
+            },
+            {
+                path: "ProjectManagement",
+                component: ProjectManagement
+            },
+            {
+                path: "SearchView",
+                component: SearchView
+            },
         ]
     }
 ];

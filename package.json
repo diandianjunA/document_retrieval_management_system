@@ -14,8 +14,10 @@
     "docx-preview": "^0.1.15",
     "echarts": "^5.4.2",
     "element-plus": "^2.3.3",
+    "mitt": "^3.0.0",
     "pinia": "^2.0.34",
     "pinia-plugin-persist": "^1.0.0",
+    "randomcolor": "^0.6.2",
     "vue": "^3.2.13",
     "vue-router": "^4.1.6"
   },

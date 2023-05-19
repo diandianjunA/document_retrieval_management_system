@@ -1,41 +1,47 @@
 <template>
   <div class="Header">
-    <div class="block">
-      <el-row>
-        <el-col :span="2" style="position:relative;" @click="collapse">
-          <el-icon size="20" style="position:absolute;top: 18px;left: 15px;right: 0;bottom: 0"><Fold /></el-icon>
-        </el-col>
-        <el-col :span="16" style="position: relative">
-          <div style="background-color: rgb(0,0,0,0);height: 55px;width: 1px;float: left"></div>
-          <div style="font-size: 30px;position: absolute;margin: auto;top: 8px;left: 50%;right: 0;bottom: 0">文档检索系统</div>
-        </el-col>
-        <el-col :span="6" style="position:relative;">
-          <el-dropdown style="position:absolute;top: 20px;right: 20px">
-            <span class="el-dropdown-link" style="color: aliceblue;">
+    <el-menu :default-active="activeIndex" mode="horizontal">
+      <div class="input_box">
+        <el-input
+            v-model="searchStoreVar.search"
+            placeholder="搜索关键字">
+          <template #append>
+            <el-button @click="search">
+              <el-icon style="color: black">
+                <Search />
+              </el-icon>
+            </el-button>
+          </template>
+        </el-input>
+      </div>
+      <el-menu-item style="margin-left: 400px" index="1" @click="goToProjectManagement">历史项目管理</el-menu-item>
+      <el-menu-item index="2">新方案生成</el-menu-item>
+      <el-dropdown style="position:absolute;top: 20px;right: 40px">
+            <span class="el-dropdown-link" style="color: black;">
               {{ userStoreVar.user.userName }}
               <el-icon class="el-icon--right">
                 <arrow-down />
               </el-icon>
             </span>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item>个人中心</el-dropdown-item>
-                <el-dropdown-item @click="quit">退出登录</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </el-col>
-      </el-row>
-    </div>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item @click="jump">个人中心</el-dropdown-item>
+            <el-dropdown-item @click="quit">退出登录</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </el-menu>
   </div>
 </template>
 
 <script>
 import { ArrowDown } from '@element-plus/icons-vue'
-import {sidebarStore} from "@/store/sidebarStore";
 import {userStore} from "@/store/userStore";
 import {ElMessage, ElMessageBox} from "element-plus";
-import router from "@/router/router";
+import {inject, ref} from "vue";
+import {Search} from '@element-plus/icons-vue'
+import {searchStore} from "@/store/searchStore";
+import {onBeforeRouteUpdate, useRouter} from "vue-router";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -45,10 +51,24 @@ export default {
   },
   // eslint-disable-next-line no-unused-vars
   setup(props,context){
-    let sidebarStoreVar=sidebarStore()
     let userStoreVar=userStore()
-    let collapse=()=> {
-      sidebarStoreVar.change()
+    const activeIndex = ref('1')
+    const searchStoreVar=searchStore()
+    searchStoreVar.construct("")
+    const reload=inject("reload")
+    let router=useRouter()
+    onBeforeRouteUpdate((to) => {
+      if ((to.path!=='/index/SearchView'&&to.path!=='/#/index/SearchView')) {
+        searchStoreVar.construct("")
+      }
+    })
+    const search = async () => {
+      //发送
+      if(router.currentRoute.value.path==='/index/SearchView'||router.currentRoute.value.path==='/#/index/SearchView'){
+        reload()
+      }else{
+        await router.push({path: "/index/SearchView"})
+      }
     }
     let quit=()=>{
       ElMessageBox.confirm(
@@ -76,10 +96,21 @@ export default {
             })
           })
     };
+    const goToProjectManagement=async () => {
+      await router.push({path: "/index/ProjectManagement"})
+    }
+    let jump=async ()=>{
+      await router.push({path: "/index/ProjectManagement"})
+    }
     return{
-      collapse,
+      activeIndex,
       userStoreVar,
-      quit
+      quit,
+      searchStoreVar,
+      search,
+      Search,
+      goToProjectManagement,
+      jump
     }
   }
 }
@@ -88,14 +119,31 @@ export default {
 <style scoped>
 .Header{
   height: 100%;
-  background-color: rgb(72,162,255);
   margin: 0;
   padding: 0;
 }
-.example-showcase .el-dropdown-link {
-  cursor: pointer;
-  color: var(--el-color-primary);
-  display: flex;
-  align-items: center;
+
+/*搜索组件最外层div */
+.input_box {
+  width: 300px;
+  height: 33px;
+  margin-top: 15px;
+  margin-left: 20px;
+  border-radius: 95px;
+  background: whitesmoke;
+}
+/*搜索input框 */
+:deep(.el-input__wrapper) {
+  background-color: transparent;/*覆盖原背景颜色，设置成透明 */
+  border-radius: 95px;
+  border: 0;
+  box-shadow: 0 0 0 0px;
+}
+/*搜索button按钮 */
+:deep(.el-input-group__append) {
+  background: rgb(64,158,255);
+  border-radius: 95px;
+  border: 0;
+  box-shadow: 0 0 0 0px;
 }
 </style>

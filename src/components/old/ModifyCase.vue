@@ -1,7 +1,7 @@
 <template>
   <div class="ModifyCase">
     <div>
-      <el-input v-model:model-value="searchValue" placeholder="请输入查询内容" suffix-icon="Search" style="width: 200px;margin: 5px" @keydown.enter="search"></el-input>
+      <el-input v-model:model-value="searchValue" placeholder="请输入查询内容" suffix-icon="Search" style="width: 200px;margin: 5px;" @keydown.enter="search"></el-input>
       <el-button @click="search" type="success">查询</el-button>
       <el-button @click="reset" type="primary">重置</el-button>
       <el-dialog v-model="dialogFormVisible" title="修改项目" width="500px" @closed="resetForm">
