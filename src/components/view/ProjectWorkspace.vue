@@ -6,7 +6,7 @@
 
     <div class="project-section">
       <h1>{{ projectName }}</h1>
-      <h2>{{ projectType }}</h2>
+      <h4>{{ projectType }}</h4>
       <textarea v-model="projectInfo"></textarea>
     </div>
   </div>
@@ -36,8 +36,11 @@ export default {
 }
 
 .project-section {
-  width: 50%;
-  margin-top: 20px;
+  border: 1px solid #ebeef5;
+  width: 350px;
+  position: absolute;
+  top: 400px;
+  left: 100px;
 }
 
 .project-section h1 {
@@ -46,7 +49,7 @@ export default {
   margin-bottom: 10px;
 }
 
-.project-section h2 {
+.project-section h4 {
   font-size: 18px;
   color: #666;
   margin-bottom: 10px;
