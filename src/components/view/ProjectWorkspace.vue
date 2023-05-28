@@ -1,32 +1,45 @@
 <template>
+  <div class="common-layout">
+    <el-container>
+      <el-aside width="300px">Aside</el-aside>
+      <el-container>
+        <el-header style="text-align: center;position: relative" height="300px">
+          <el-button style="position: absolute;top: 20px;right: 50px" type="primary" round @click="goToNewScheme">方案选型分析</el-button>
+          <h1 style="font-size: 24px;color: #333;margin: 20px;">{{ projectStoreVar.project.name }}</h1>
+          <h4 style="font-size: 18px;color: #666;margin: 20px;">类型： {{ projectStoreVar.project.category }}</h4>
+          <h4 style="font-size: 18px;color: #666;margin: 20px;">基本信息</h4>
+          <el-button color="#626aef" dark="dark" :icon="Edit" style="position: absolute;right: 580px;top: 115px"/>
+          <el-divider />
+          <div style="padding-left: 20%;padding-right: 20%;height: 80px;overflow-y: scroll;">{{projectStoreVar.project.remark}}</div>
+          <el-divider />
+        </el-header>
+        <el-main style="">
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
   <div>
-    <div class="search-box">
-      <!-- 主搜索框的代码 -->
-    </div>
 
-    <div class="project-section">
-      <h1>{{ projectName }}</h1>
-      <h4>{{ projectType }}</h4>
-      <textarea v-model="projectInfo"></textarea>
-    </div>
   </div>
 </template>
 
 <script>
+import {projectStore} from "@/store/projectStore";
+import { Edit} from '@element-plus/icons-vue'
+import router from "@/router/router";
 export default {
   name: "ProjectWorkspace",
-  data() {
+  setup() {
+    const projectStoreVar = projectStore();
+    const goToNewScheme=async () => {
+      await router.push({path: "/index/NewScheme"})
+    }
     return {
-      projectName: "",
-      projectType: "",
-      projectInfo: ""
+      projectStoreVar,
+      Edit,
+      goToNewScheme
     };
   },
-  created() {
-    this.projectName = this.$store.state.projectStore.projectName;
-    this.projectType = this.$store.state.projectStore.projectType;
-    this.projectInfo = this.$store.state.projectStore.projectInfo;
-  }
 }
 </script>
 
@@ -38,9 +51,7 @@ export default {
 .project-section {
   border: 1px solid #ebeef5;
   width: 350px;
-  position: absolute;
-  top: 400px;
-  left: 100px;
+  height: 600px;
 }
 
 .project-section h1 {
@@ -63,4 +74,5 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+::-webkit-scrollbar { width: 0 !important }
 </style>

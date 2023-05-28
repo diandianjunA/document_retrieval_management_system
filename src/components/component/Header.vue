@@ -1,6 +1,6 @@
 <template>
   <div class="Header">
-    <el-menu :default-active="activeIndex" mode="horizontal">
+    <el-menu router :default-active="router.currentRoute.value.path" mode="horizontal">
       <div class="input_box">
         <el-input
             v-model="searchStoreVar.search"
@@ -14,8 +14,8 @@
           </template>
         </el-input>
       </div>
-      <el-menu-item style="margin-left: 400px" index="1" @click="goToProjectManagement">历史项目管理</el-menu-item>
-      <el-menu-item index="2" @click="goToNewScheme">新方案生成</el-menu-item>
+      <el-menu-item style="margin-left: 400px" index="/index/ProjectManagement" @click="goToProjectManagement">历史项目管理</el-menu-item>
+      <el-menu-item index="/index/NewScheme" @click="goToNewScheme">新方案生成</el-menu-item>
       <el-dropdown style="position:absolute;top: 20px;right: 40px">
             <span class="el-dropdown-link" style="color: black;">
               {{ userStoreVar.user.userName }}
@@ -42,6 +42,7 @@ import {inject, ref} from "vue";
 import {Search} from '@element-plus/icons-vue'
 import {searchStore} from "@/store/searchStore";
 import {onBeforeRouteUpdate, useRouter} from "vue-router";
+// import router from "@/router/router";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
@@ -58,7 +59,7 @@ export default {
     const reload=inject("reload")
     let router=useRouter()
     onBeforeRouteUpdate((to) => {
-      if ((to.path!=='/index/SearchView'&&to.path!=='/#/index/SearchView')) {
+      if ((to.path!=='/index/SearchView'&&to.path!=='/#/index/SearchView'&&to.path!=='/index/documentPreview'&&to.path!=='/#/index/documentPreview')) {
         searchStoreVar.construct("")
       }
     })
@@ -103,7 +104,7 @@ export default {
       await router.push({path: "/index/ProjectManagement"})
     }
     const goToNewScheme=async () => {
-      await router.push({path: "/index/NewScheme"})
+      await router.push({path: "/index/ProjectChoice"})
     }
     return{
       activeIndex,
@@ -114,7 +115,8 @@ export default {
       Search,
       goToProjectManagement,
       jump,
-      goToNewScheme
+      goToNewScheme,
+      router
     }
   }
 }

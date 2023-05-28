@@ -15,6 +15,7 @@ import ProjectManagement from "@/components/view/ProjectManagement";
 import SearchView from "@/components/view/SearchView";
 import ProjectWorkspace from "@/components/view/ProjectWorkspace";
 import NewScheme from "@/components/view/NewScheme";
+import ProjectChoice from "@/components/view/ProjectChoice";
 const routes = [
     {
         path: "/",
@@ -83,6 +84,10 @@ const routes = [
             {
                 path: "NewScheme",
                 component: NewScheme
+            },
+            {
+                path: "ProjectChoice",
+                component: ProjectChoice
             }
         ]
     }

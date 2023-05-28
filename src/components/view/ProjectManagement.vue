@@ -61,7 +61,7 @@
     <div style="position: relative;">
       <div style="border: 1px solid #ebeef5;width: 750px;margin-left: 600px"></div>
       <div v-for="(item,index) in projectData.list" :key=index>
-        <div class="projectItem" @click="jump">
+        <div class="projectItem" @click="jump(item)">
           <h2>{{item.name}}</h2>
           <h4 style="margin-top: 10px;margin-bottom: 10px">{{item.category}}</h4>
           <textarea v-model="item.remark"

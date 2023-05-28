@@ -12,7 +12,7 @@
       </el-aside>
       <el-main>
         <div v-for="(item,index) in searchData" :key="index">
-          <Material :name="item.name" :content="item.content" :category="item.category" :category-color="categoryMap[item.category]"></Material>
+          <Material :name="item.name" :content="item.content" :category="item.category" :category-color="categoryMap[item.category]" @click="jump(item)"></Material>
         </div>
         <el-pagination
             background
@@ -36,6 +36,9 @@ import {get} from "@/request/request";
 import {ElMessage} from "element-plus";
 import {searchStore} from "@/store/searchStore";
 import Material from "@/components/component/Material";
+import axios from "@/request/http";
+import router from "@/router/router";
+import {documentStore} from "@/store/documentStore";
 
 export default {
   name: "SearchView",
@@ -49,6 +52,7 @@ export default {
     // const route = useRoute()
     const categoryMap=ref({})
     const categoryList=ref([])
+    const documentStoreVar=documentStore()
     const total=ref(0)
     const searchStoreVar=searchStore()
     const primarySearch=async () => {
@@ -76,6 +80,20 @@ export default {
     //query
     const searchData=ref([])
     const randomColor = require('randomcolor');
+    const jump=(item)=>{
+      axios({
+        url: httpUrl+"/material/getContent",
+        method: 'get',
+        responseType: 'arraybuffer',
+        params:{
+          location:item.location
+        }
+      }).then(async res => {
+        const blob = new Blob([res.data]);
+        documentStoreVar.construct(blob)
+        await router.push({path: "/index/documentPreview"})
+      })
+    }
     return{
       searchData,
       randomColor,
@@ -84,7 +102,8 @@ export default {
       pageSize,
       currentPage,
       total,
-      primarySearch
+      primarySearch,
+      jump
     }
   }
 }
