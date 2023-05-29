@@ -1,15 +1,11 @@
 <template>
   <div>
-    <el-table
-        :data="projectData" row-key="id" ref="projectTableRef"
-        style="width: 300px;height: 500px;position: absolute;left: 0;right: 0;top: 0;bottom: 0;margin: auto" border @selection-change="projectSelection">
-      <el-table-column
-          prop="name"
-          label="请选择生成方案的项目"
-          width="251px">
-      </el-table-column>
-      <el-table-column type="selection" :reserve-selection="true"/>
-    </el-table>
+    <div style="text-align: center;font-family: Bahnschrift,serif;margin-top: 8%;color: #606266;font-weight: bold">请选择生成方案的项目</div>
+    <el-menu class="el-menu-vertical-demo"  style="width: 350px;height: 400px;position: absolute;left: 0;right: 0;top: 0;bottom: 0;margin: auto;font-family: Bahnschrift,serif;border: #666666;overflow-y: scroll">
+      <el-menu-item v-for="(item,index) in projectData" :key="index" @click="jump(item)">
+        <span>{{item.name}}</span>
+      </el-menu-item>
+    </el-menu>
   </div>
 </template>
 
@@ -18,13 +14,14 @@ import {documentStore} from "@/store/documentStore";
 import router from "@/router/router";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import {get} from "@/request/request";
+import {projectStore} from "@/store/projectStore";
 
 export default {
   name: "ProjectChoice",
   setup(){
     const documentStoreVar=documentStore()
+    const projectStoreVar=projectStore()
     const projectData=ref()
-    const projectIds=ref([])
     const {proxy}=getCurrentInstance();
     const httpUrl=proxy.$key
     onMounted(async () => {
@@ -39,22 +36,19 @@ export default {
     const goToNewScheme=async () => {
       await router.push({path: "/index/NewScheme"})
     }
-    const projectSelection = (val)=>{
-      projectIds.value = []
-      // 假设取出 id 字段
-      val.forEach(item => {
-        const id = item.id
-        // 判断数组中是否包含这个 id
-        if (projectIds.value.indexOf(id) === -1) {
-          projectIds.value.push(id)
-        }
-      })
+    const jump=async (item) => {
+      projectStoreVar.project.id = item.id
+      projectStoreVar.project.name = item.name
+      projectStoreVar.project.remark = item.remark
+      projectStoreVar.project.category = item.category
+      projectStoreVar.project.userId = item.userId
+      await router.push({path: "/index/NewScheme"})
     }
     return {
       documentStoreVar,
       goToNewScheme,
       projectData,
-      projectSelection
+      jump
     }
   }
 }

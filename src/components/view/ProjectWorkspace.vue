@@ -1,19 +1,29 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="300px">Aside</el-aside>
+      <el-aside width="500px">
+        <div style="height: 700px;width: 300px;text-align: center;margin-left: 200px;margin-top: 60px;overflow: hidden">
+          <h1 style="font-size: 24px;color: #333;margin-bottom: 15px;margin-top: 15px">{{ projectStoreVar.project.name }}</h1>
+          <h4 style="font-size: 18px;color: #666;margin-bottom: 15px">类型： {{ projectStoreVar.project.category }}</h4>
+          <h4 style="font-size: 18px;color: #666;margin-bottom: 15px">基本信息</h4>
+          <el-divider />
+          <div style="padding-left: 10px;padding-right: 10px;height: 120px;overflow-y: scroll;font-size: 16px;width: 280px;line-height: 18px;text-align: center;font-family: Bahnschrift,serif">{{projectStoreVar.project.remark}}</div>
+          <el-divider />
+          <div class="box">
+            <img src="@/assets/方案选型分析.png" style="width: 56px;height: 56px;position: absolute;top: 15%;left: 10%;border-radius: 28px"/>
+            <div style="position: absolute;top: 18%;left: 38%;font-size: 16px;color: #666;font-weight: bold">方案选型分析</div>
+            <div style="position: absolute;width: 150px;top: 50%;left: 38%;font-size: 13px;color: #666;font-family: Bahnschrift,serif;font-weight: bold;text-align: left">自动为您进行相似度比对，生成最佳方案</div>
+          </div>
+          <div class="box">
+            <img src="@/assets/相似度计算.jpeg" style="width: 56px;height: 56px;position: absolute;top: 15%;left: 10%;border-radius: 28px"/>
+            <div style="position: absolute;top: 18%;left: 38%;font-size: 16px;color: #666;font-weight: bold">相似度计算</div>
+            <div style="position: absolute;width: 150px;top: 50%;left: 38%;font-size: 13px;color: #666;font-family: Bahnschrift,serif;font-weight: bold;text-align: left">计算该项目与其他项目的相似程度</div>
+          </div>
+        </div>
+      </el-aside>
       <el-container>
-        <el-header style="text-align: center;position: relative" height="300px">
-          <el-button style="position: absolute;top: 20px;right: 50px" type="primary" round @click="goToNewScheme">方案选型分析</el-button>
-          <h1 style="font-size: 24px;color: #333;margin: 20px;">{{ projectStoreVar.project.name }}</h1>
-          <h4 style="font-size: 18px;color: #666;margin: 20px;">类型： {{ projectStoreVar.project.category }}</h4>
-          <h4 style="font-size: 18px;color: #666;margin: 20px;">基本信息</h4>
-          <el-button color="#626aef" dark="dark" :icon="Edit" style="position: absolute;right: 580px;top: 115px"/>
-          <el-divider />
-          <div style="padding-left: 20%;padding-right: 20%;height: 80px;overflow-y: scroll;">{{projectStoreVar.project.remark}}</div>
-          <el-divider />
-        </el-header>
-        <el-main style="">
+        <el-main style="position: relative;height: 800px">
+          <el-divider direction="vertical" style="position: absolute;height: 600px;top: 10%"/>
         </el-main>
       </el-container>
     </el-container>
@@ -44,35 +54,19 @@ export default {
 </script>
 
 <style scoped>
-.search-box {
-  /* 主搜索框样式 */
-}
-
-.project-section {
-  border: 1px solid #ebeef5;
-  width: 350px;
-  height: 600px;
-}
-
-.project-section h1 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.project-section h4 {
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.project-section textarea {
-  width: 100%;
-  height: 200px;
-  font-size: 16px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
 ::-webkit-scrollbar { width: 0 !important }
+
+.box{
+  position: relative;
+  width: 200px;
+  height: 40px;
+  margin: 20px auto;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  border: #CDD0D6 solid 1px;
+}
+.box:hover {
+  box-shadow: 0px 0px 20px -4px rgba(0, 0, 0, .2);
+  cursor: pointer;
+}
 </style>

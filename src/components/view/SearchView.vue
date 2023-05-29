@@ -103,7 +103,7 @@ export default {
       currentPage,
       total,
       primarySearch,
-      jump
+      jump,
     }
   }
 }
