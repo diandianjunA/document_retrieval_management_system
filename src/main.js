@@ -10,9 +10,9 @@ import piniaPluginPersist from 'pinia-plugin-persist'
 import * as echarts from "echarts";
 const app = createApp(App)
 app.config.globalProperties.$echarts = echarts
-// app.config.globalProperties.$key="http://localhost:8070"
+app.config.globalProperties.$key="http://localhost:8070"
 // app.config.globalProperties.$key="http://www.diandianjun.com.cn:8070"
-app.config.globalProperties.$key="http://10.16.81.19:8070"
+// app.config.globalProperties.$key="http://10.16.81.19:8070"
 //添加路由
 app.use(router)
 //添加elementUI组件

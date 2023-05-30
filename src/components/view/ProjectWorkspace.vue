@@ -91,12 +91,15 @@
                 style="width: 700px;height: 380px;font-family: Bahnschrift,serif;font-size: 16px;border-radius: 10px;border: #CDD0D6 solid 1px;"
                 @selection-change="handleSelectionChange"
                 :row-style="{height:'57px'}"
-                @row-contextmenu="rowClick"
+                @row-click="rowClick"
                 @row-dblclick="rowDblclick"
             >
               <el-table-column v-if="deleteState" width="650px">
                 <template #header>
-                  当前路径：{{ path }}
+                  <div style="width: 100%;height: 100%;position: relative">
+                    当前路径：{{ path }}
+                    <div style="position: absolute;right: 20%">点击返回上一级文件夹</div>
+                  </div>
                 </template>
                 <template #default="{row}">
                   <img v-if="row.type==='File'" style="width: 20px;height: 20px;margin-right: 20px"
@@ -117,7 +120,10 @@
               </el-table-column>
               <el-table-column v-if="!deleteState" label="Name" width="700px">
                 <template #header>
-                  当前路径：{{ path }}
+                  <div style="width: 100%;height: 100%;position: relative">
+                    当前路径：{{ path }}
+                    <el-icon size="20px" style="position: absolute;right: 8%;top: 25%" @click="back"><Top /></el-icon>
+                  </div>
                 </template>
                 <template #default="{row}">
                   <img v-if="row.type==='File'" style="width: 20px;height: 20px;margin-right: 20px"
@@ -139,6 +145,25 @@
               <el-table-column v-if="deleteState" type="selection" width="50"/>
             </el-table>
           </div>
+          <el-table :data="schemeData" style="width: 700px;position: absolute;top: 70%;left: 10%;font-family: Bahnschrift,serif;font-size: 16px;border-radius: 10px;border: #CDD0D6 solid 1px;">
+            <el-table-column>
+              <template #header>
+                方案
+                <el-icon size="20px" style="position: absolute;right: 10%;top: 25%" @click="editScheme"><EditPen /></el-icon>
+                <el-icon size="20px" style="position: absolute;right: 5%;top: 25%" @click="exportScheme"><Upload /></el-icon>
+              </template>
+              <template #default="{row}">
+                <div v-if="!editState">
+                  <h2 style="margin: 20px">{{row.name}}</h2>
+                  <p style="margin: 20px">{{row.summary}}</p>
+                </div>
+                <div v-if="editState">
+                  <el-input v-model="row.name" style="width: 85%;margin: 20px"></el-input>
+                  <textarea v-model="row.summary" style="width: 85%;margin: 20px;padding: 10px;resize: none;border-color: #CDD0D6;font-family: Arial,serif"></textarea>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-main>
       </el-container>
     </el-container>
@@ -150,7 +175,7 @@
 
 <script>
 import {projectStore} from "@/store/projectStore";
-import {Edit} from '@element-plus/icons-vue'
+import {Edit} from "@element-plus/icons-vue";
 import router from "@/router/router";
 import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {get, post} from "@/request/request";
@@ -173,6 +198,9 @@ export default {
     const deleteState = ref(false);
     const dirNameVisible = ref(false);
     const dirName = ref("");
+    const schemeData=ref([])
+    const editState=ref(false)
+    let time=null;
     const materialForm = reactive({
       file: '',
     })
@@ -184,6 +212,12 @@ export default {
           categoryPath: path.value
         })
         fileData.value = data
+      }
+      {
+        const {data} = await get(httpUrl+"/scheme/getByProjectId",{
+          projectId:projectStoreVar.project.id
+        })
+        schemeData.value.push(data)
       }
     })
     const handleSelectionChange = (val) => {
@@ -324,9 +358,41 @@ export default {
       }
     }
     const rowClick=(row)=>{
-      if(row.type==='File'){
+      if (time) {
+        clearTimeout(time);
+      }
+      time = setTimeout(() => {
+        if(row.type==='File'){
+          axios({
+            url: httpUrl+"/material/getContentById",
+            method: 'get',
+            responseType: 'arraybuffer',
+            params:{
+              id:row.id
+            }
+          }).then(async res => {
+            const blob = new Blob([res.data]);
+            let documentStoreVar = documentStore()
+            documentStoreVar.construct(blob)
+            await router.push({path: "/index/documentPreview"})
+          })
+        }
+      }, 300);
+    }
+    const rowDblclick=async (row) => {
+      if (time) {
+        clearTimeout(time); //清除
+      }
+      if (row.type === 'Dir') {
+        path.value = path.value+row.name+"/"
+        const {data} = await get(httpUrl + "/material/getFromCategory", {
+          projectId: projectStoreVar.project.id,
+          categoryPath: path.value
+        })
+        fileData.value = data
+      }else{
         axios({
-          url: httpUrl+"/material/getDownload2",
+          url: httpUrl+"/material/getDownload3",
           method: 'get',
           responseType: 'arraybuffer',
           params:{
@@ -339,8 +405,8 @@ export default {
           // 将流文件写入a标签的href属性值
           a.href = URL.createObjectURL(blob);
           //设置文件名
-          const str = row.location.split("/");
-          a.download = str[str.length - 1]
+          const str = row.name+'.docx';
+          a.download = str;
           // 隐藏a标签
           a.style.display = "none";
           // 将a标签追加到文档对象中
@@ -352,29 +418,50 @@ export default {
         })
       }
     }
-    const rowDblclick=async (row) => {
-      if (row.type === 'Dir') {
-        path.value = path.value+row.name+"/"
-        const {data} = await get(httpUrl + "/material/getFromCategory", {
+    const back=()=>{
+      if(path.value==='/'){
+        ElMessage({
+          message: '已经是根目录了',
+          type: 'info',
+        })
+      }else{
+        path.value=path.value.substring(0,path.value.length-1)
+        path.value=path.value.substring(0,path.value.lastIndexOf('/')+1)
+        get(httpUrl + "/material/getFromCategory", {
           projectId: projectStoreVar.project.id,
           categoryPath: path.value
-        })
-        fileData.value = data
-      }else{
-        axios({
-          url: httpUrl+"/material/getContentById",
-          method: 'get',
-          responseType: 'arraybuffer',
-          params:{
-            id:row.id
-          }
-        }).then(async res => {
-          const blob = new Blob([res.data]);
-          let documentStoreVar = documentStore()
-          documentStoreVar.construct(blob)
-          await router.push({path: "/index/documentPreview"})
+        }).then(res=>{
+          fileData.value=res.data
         })
       }
+    }
+    const editScheme=async () => {
+      if (editState.value === true) {
+        editState.value = false
+        const {code} = await post(httpUrl + "/scheme/update", {
+          id: schemeData.value[0].id,
+          name: schemeData.value[0].name,
+          summary: schemeData.value[0].summary,
+          projectId: schemeData.value[0].projectId,
+          userId: schemeData.value[0].userId
+        })
+        if (code === 200) {
+          ElMessage({
+            message: '修改成功',
+            type: 'success',
+          })
+        } else {
+          ElMessage({
+            message: '修改失败',
+            type: 'error',
+          })
+        }
+      } else {
+        editState.value = true
+      }
+    }
+    const exportScheme=()=>{
+
     }
     return {
       projectStoreVar,
@@ -393,7 +480,12 @@ export default {
       materialFormVisible,
       uploadMaterial,
       rowClick,
-      rowDblclick
+      rowDblclick,
+      back,
+      schemeData,
+      editScheme,
+      exportScheme,
+      editState
     };
   },
 }
