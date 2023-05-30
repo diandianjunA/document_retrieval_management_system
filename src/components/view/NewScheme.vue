@@ -344,9 +344,9 @@ export default defineComponent({
         ElMessage.error("请至少选择一个项目")
         return
       }
-      const { data } = await get(httpUrl + "/scheme/generateMulti", {
-        materialIds: JSON.stringify(materialIds.value),
-        projectIds: JSON.stringify(projectIds.value),
+      const { data } = await post(httpUrl + "/scheme/generateMulti", {
+        materialIds: materialIds.value,
+        projectIds: projectIds.value,
         length: num.value
       });
       scheme.value=data;
