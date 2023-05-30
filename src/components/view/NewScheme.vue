@@ -349,8 +349,7 @@ export default defineComponent({
         projectIds: projectIds.value,
         length: num.value
       });
-      scheme.value=data;
-      scheme.summary="方案1"
+      scheme.summary=data
       dialogVisible.value=true
     }
     const materialSelection = (val)=>{

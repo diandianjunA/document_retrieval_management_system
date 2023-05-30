@@ -60,9 +60,24 @@
           </span>
             </template>
           </el-dialog>
-          <el-button style="position: absolute;right: 39%;top: 13%;color: #FFFFFF" color="#409EFF" dark="dark">
+          <el-button style="position: absolute;right: 39%;top: 13%;color: #FFFFFF" color="#409EFF" dark="dark" @click="materialFormVisible=true">
             上传文件
           </el-button>
+          <el-dialog v-model="materialFormVisible" title="上传资料">
+            <el-form :model="materialForm">
+              <el-form-item label="资料文件" prop="file">
+                <input id="materialFile" type="file"/>
+              </el-form-item>
+            </el-form>
+            <template #footer>
+              <span class="dialog-footer">
+                <el-button @click="materialFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="uploadMaterial">
+                  提交
+                </el-button>
+              </span>
+            </template>
+          </el-dialog>
           <el-button style="position: absolute;right: 30%;top: 13%" color="rgb(164,14,38)" dark="dark"
                      @click="deleteState=!deleteState">删除文件
           </el-button>
@@ -76,6 +91,8 @@
                 style="width: 700px;height: 380px;font-family: Bahnschrift,serif;font-size: 16px;border-radius: 10px;border: #CDD0D6 solid 1px;"
                 @selection-change="handleSelectionChange"
                 :row-style="{height:'57px'}"
+                @row-contextmenu="rowClick"
+                @row-dblclick="rowDblclick"
             >
               <el-table-column v-if="deleteState" width="650px">
                 <template #header>
@@ -135,9 +152,11 @@
 import {projectStore} from "@/store/projectStore";
 import {Edit} from '@element-plus/icons-vue'
 import router from "@/router/router";
-import {getCurrentInstance, onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, reactive, ref} from "vue";
 import {get, post} from "@/request/request";
 import {ElMessage, ElMessageBox} from "element-plus";
+import axios from "@/request/http";
+import {documentStore} from "@/store/documentStore";
 
 export default {
   name: "ProjectWorkspace",
@@ -154,6 +173,10 @@ export default {
     const deleteState = ref(false);
     const dirNameVisible = ref(false);
     const dirName = ref("");
+    const materialForm = reactive({
+      file: '',
+    })
+    const materialFormVisible = ref(false);
     onMounted(async () => {
       {
         const {data} = await get(httpUrl + "/material/getFromCategory", {
@@ -225,8 +248,8 @@ export default {
             dirIds.push(deleteList.value[i].name)
           }
         }
-        let materialCode
-        let dirCode
+        let materialCode=200
+        let dirCode=200
         if (materialIds.length !== 0) {
           const {code} = await post(httpUrl + "/material/deleteList", {
             ids: materialIds,
@@ -234,9 +257,9 @@ export default {
           materialCode = code
         }
         if (dirIds.length !== 0) {
-          const {code} = await post(httpUrl + "/material/deleteDirList", {
+          const {code} = await post(httpUrl + "/material/deleteCategoryList", {
             projectId: projectStoreVar.project.id,
-            ids: dirIds,
+            deleteList: dirIds,
             upperPath: path.value
           })
           dirCode = code
@@ -264,6 +287,95 @@ export default {
         })
       })
     };
+    const uploadMaterial=async () => {
+      materialFormVisible.value = false
+      let formData = new FormData()
+      const materialFile = document.querySelector("#materialFile");
+      if (!materialFile.files.length) {
+        ElMessage({
+          message: '请选择文件',
+          type: 'error',
+        })
+        return
+      }
+      const file = materialFile.files[0]
+      formData.append('file', file)
+      formData.append('projectId', projectStoreVar.project.id)
+      formData.append('upperPath', path.value)
+      const {data} = await axios.post(httpUrl + "/material/add", formData, {
+        'Content-Type': 'multipart/form-data'
+      })
+      const code = data.code
+      if (code === 200) {
+        ElMessage({
+          message: '操作成功',
+          type: 'success',
+        })
+        const {data} = await get(httpUrl + "/material/getFromCategory", {
+          projectId: projectStoreVar.project.id,
+          categoryPath: path.value
+        })
+        fileData.value = data
+      } else {
+        ElMessage({
+          message: data.msg,
+          type: 'error',
+        })
+      }
+    }
+    const rowClick=(row)=>{
+      if(row.type==='File'){
+        axios({
+          url: httpUrl+"/material/getDownload2",
+          method: 'get',
+          responseType: 'arraybuffer',
+          params:{
+            id:row.id
+          }
+        }).then(res => {
+          const blob = new Blob([res.data]);
+          //创建一个<a></a>标签
+          let a = document.createElement("a");
+          // 将流文件写入a标签的href属性值
+          a.href = URL.createObjectURL(blob);
+          //设置文件名
+          const str = row.location.split("/");
+          a.download = str[str.length - 1]
+          // 隐藏a标签
+          a.style.display = "none";
+          // 将a标签追加到文档对象中
+          document.body.appendChild(a);
+          // 模拟点击了a标签，会触发a标签的href的读取，浏览器就会自动下载了
+          a.click();
+          //用完就删除a标签
+          a.remove();
+        })
+      }
+    }
+    const rowDblclick=async (row) => {
+      if (row.type === 'Dir') {
+        path.value = path.value+row.name+"/"
+        const {data} = await get(httpUrl + "/material/getFromCategory", {
+          projectId: projectStoreVar.project.id,
+          categoryPath: path.value
+        })
+        fileData.value = data
+      }else{
+        axios({
+          url: httpUrl+"/material/getContentById",
+          method: 'get',
+          responseType: 'arraybuffer',
+          params:{
+            id:row.id
+          }
+        }).then(async res => {
+          const blob = new Blob([res.data]);
+          let documentStoreVar = documentStore()
+          documentStoreVar.construct(blob)
+          await router.push({path: "/index/documentPreview"})
+        })
+      }
+    }
     return {
       projectStoreVar,
       Edit,
@@ -276,7 +388,12 @@ export default {
       createDir,
       dirNameVisible,
       dirName,
-      deleteFiles
+      deleteFiles,
+      materialForm,
+      materialFormVisible,
+      uploadMaterial,
+      rowClick,
+      rowDblclick
     };
   },
 }

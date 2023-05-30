@@ -320,10 +320,12 @@ export default {
       searchValueForRecord.value=""
       more()
     }
-    const recordClose=()=>{
-      dialogTableVisible.value=false
-      dateChoice.value=""
-      recordData2.value=[]
+    const recordClose=async () => {
+      dialogTableVisible.value = false
+      dateChoice.value = ""
+      recordData2.value = []
+      const {data} = await get(httpUrl + "/record/getFirstFive", {})
+      recordData.value = data
     }
     const handleDeleteForRecord = (row)=>{
       ElMessageBox.confirm(
@@ -389,7 +391,7 @@ export default {
       resetForRecord,
       handleDeleteForRecord,
       recordClose,
-      add
+      add,
     }
   }
 }
