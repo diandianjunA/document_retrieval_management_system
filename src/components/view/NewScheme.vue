@@ -117,7 +117,13 @@
         width="30%"
         :before-close="handleClose"
     >
-      <span>{{scheme.summary}}</span>
+      <el-form v-loading="loading"
+               element-loading-text="Loading..."
+               :element-loading-svg="svg"
+               class="custom-loading-svg"
+               element-loading-svg-view-box="-10, -10, 50, 50">
+        <textarea v-model="scheme.summary" style="resize: none;width: 400px;height: 300px;padding: 10px;border: none;font-size: 16px;outline: none"></textarea>
+      </el-form>
       <el-dialog
           v-model="innerVisible"
           width="30%"
@@ -136,7 +142,7 @@
       </el-dialog>
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
+          <el-button @click="handleClose">取消</el-button>
           <el-button type="primary" @click="uploadScheme">
             保存
           </el-button>
@@ -173,6 +179,17 @@ export default defineComponent({
     const projectStoreVar=projectStore()
     const userStoreVar=userStore()
     const num=ref(50)
+    const loading = ref(false)
+    const svg = `
+        <path class="path" d="
+          M 30 15
+          L 28 17
+          M 25.61 25.61
+          A 15 15, 0, 0, 1, 15 30
+          A 15 15, 0, 1, 1, 27.99 7.5
+          L 15 15
+        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
+      `
     const scheme=reactive({
       summary:"",
       name:""
@@ -182,9 +199,11 @@ export default defineComponent({
     const materialIds=ref([])
     const projectIds=ref([])
     const handleClose = () => {
-      ElMessageBox.confirm('Are you sure to close this dialog?')
+      ElMessageBox.confirm('确定要退出吗？')
           .then(() => {
             dialogVisible.value = false;
+            scheme.name="";
+            scheme.summary="";
           })
     }
     const Progs = [];
@@ -344,13 +363,15 @@ export default defineComponent({
         ElMessage.error("请至少选择一个项目")
         return
       }
+      dialogVisible.value=true
+      loading.value=true
       const { data } = await post(httpUrl + "/scheme/generateMulti", {
         materialIds: materialIds.value,
         projectIds: projectIds.value,
         length: num.value
       });
       scheme.summary=data
-      dialogVisible.value=true
+      loading.value=false
     }
     const materialSelection = (val)=>{
       materialIds.value = []
@@ -422,7 +443,9 @@ export default defineComponent({
       projectSelection,
       uploadScheme,
       innerVisible,
-      saveScheme
+      saveScheme,
+      loading,
+      svg
     }
   },
 })
@@ -430,4 +453,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+  width: 0 !important
+}
 </style>

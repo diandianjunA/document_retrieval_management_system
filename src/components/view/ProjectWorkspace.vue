@@ -25,7 +25,7 @@
               自动为您进行相似度比对，生成最佳方案
             </div>
           </div>
-          <div class="box">
+          <div class="box" @click="similarityDialog">
             <img src="@/assets/相似度计算.jpeg"
                  style="width: 56px;height: 56px;position: absolute;top: 15%;left: 10%;border-radius: 28px"/>
             <div style="position: absolute;top: 18%;left: 38%;font-size: 16px;color: #666;font-weight: bold">
@@ -38,8 +38,37 @@
           </div>
         </div>
       </el-aside>
+      <el-dialog
+          v-model="similarityVisible"
+          title="相似度数据"
+          width="40%"
+      >
+        <el-form
+            v-model="similarityVisible"
+            v-if="similarityVisible === true"
+            id="main"
+            style="width: 400px; height: 330px; margin: 0 auto"
+        ></el-form>
+        <el-pagination
+            background
+            :page-size="pageSize"
+            layout="prev, pager, next"
+            :total="analyseData.total"
+            :pager-count="navSize"
+            class="mt-4"
+            v-model:current-page="currentPage"
+            @current-change="handleCurrentChange" style="justify-content: center;"></el-pagination>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button type="primary" @click="similarityVisible = false">
+              退出
+            </el-button>
+          </span>
+        </template>
+      </el-dialog>
       <el-container>
         <el-main style="position: relative;height: 800px">
+          <el-button type="danger" style="position:absolute;top: 5%;right: 5%" @click="deleteProject" round>删除项目</el-button>
           <el-divider direction="vertical" style="position: absolute;height: 600px;top: 10%"/>
           <el-button style="position: absolute;right: 48%;top: 13%" color="rgb(31,136,61)" dark="dark"
                      @click="dirNameVisible=true">新建文件夹
@@ -52,12 +81,12 @@
           >
             <el-input v-model="dirName" placeholder="请输入文件夹名称" required></el-input>
             <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dirNameVisible = false">取消</el-button>
-            <el-button type="primary" @click="createDir">
-              保存
-            </el-button>
-          </span>
+              <span class="dialog-footer">
+                <el-button @click="dirNameVisible = false">取消</el-button>
+                <el-button type="primary" @click="createDir">
+                  保存
+                </el-button>
+              </span>
             </template>
           </el-dialog>
           <el-button style="position: absolute;right: 39%;top: 13%;color: #FFFFFF" color="#409EFF" dark="dark" @click="materialFormVisible=true">
@@ -102,18 +131,18 @@
                   </div>
                 </template>
                 <template #default="{row}">
-                  <img v-if="row.type==='File'" style="width: 20px;height: 20px;margin-right: 20px"
+                  <img alt="" v-if="row.type==='File'" style="width: 20px;height: 20px;margin-right: 20px"
                        src="@/assets/doc.png">
-                  <img v-if="row.type==='Dir'" style="width: 20px;height: 20px;margin-right: 20px"
+                  <img alt="" v-if="row.type==='Dir'" style="width: 20px;height: 20px;margin-right: 20px"
                        src="@/assets/文件夹.png">
                   <div style="display: inline-block;width: 200px">{{ row.name }}</div>
-                  <div style="display: inline-block;width: 230px;margin-left: 45px">上次修改于
+                  <div style="display: inline-block;width: 240px;margin-left: 45px;">上次修改于
                     {{ getTime(row.lastModified) }}
                   </div>
-                  <el-icon size="large" style="margin-left: 90px" v-if="row.type==='File'">
+                  <el-icon size="large" style="margin-left: 60px" v-if="row.type==='File'">
                     <Download/>
                   </el-icon>
-                  <el-icon size="large" style="margin-left: 90px" v-if="row.type==='Dir'">
+                  <el-icon size="large" style="margin-left: 60px" v-if="row.type==='Dir'">
                     <FolderOpened/>
                   </el-icon>
                 </template>
@@ -131,7 +160,7 @@
                   <img v-if="row.type==='Dir'" style="width: 20px;height: 20px;margin-right: 20px"
                        src="@/assets/文件夹.png">
                   <div style="display: inline-block;width: 200px">{{ row.name }}</div>
-                  <div style="display: inline-block;width: 230px;margin-left: 45px">上次修改于
+                  <div style="display: inline-block;width: 240px;margin-left: 45px">上次修改于
                     {{ getTime(row.lastModified) }}
                   </div>
                   <el-icon size="large" style="margin-left: 90px" v-if="row.type==='File'">
@@ -177,11 +206,12 @@
 import {projectStore} from "@/store/projectStore";
 import {Edit} from "@element-plus/icons-vue";
 import router from "@/router/router";
-import {getCurrentInstance, onMounted, reactive, ref} from "vue";
+import {getCurrentInstance, nextTick, onBeforeUnmount, onMounted, reactive, ref, toRefs} from "vue";
 import {get, post} from "@/request/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "@/request/http";
 import {documentStore} from "@/store/documentStore";
+import * as echarts from "echarts";
 
 export default {
   name: "ProjectWorkspace",
@@ -200,6 +230,14 @@ export default {
     const dirName = ref("");
     const schemeData=ref([])
     const editState=ref(false)
+    const similarityVisible=ref(false);
+    const currentPage=ref(1)
+    const similaritys = []; /* 相似度数据 */
+    const Progs = [];
+    const pageSize=5
+    const navSize=5
+    const analyseData = ref(0);
+    let chart;
     let time=null;
     const materialForm = reactive({
       file: '',
@@ -220,6 +258,112 @@ export default {
         schemeData.value.push(data)
       }
     })
+    onBeforeUnmount(()=>{
+      if(chart){
+        chart.dispose()
+      }
+    });
+    const updateCharts=(charts,state)=>{
+      charts.setOption(state.option)
+    }
+    const handleCurrentChange = async () => {
+      const { data } = await get(httpUrl + "/project/analyze", {
+        projectId: projectStoreVar.project.id,
+        pageNum: currentPage.value,
+        navSize: navSize,
+        pageSize: pageSize
+      });
+      analyseData.value=data;
+      Progs.length=0;
+      similaritys.length=0;
+      for (let i = 0; i < data.list.length; i++) {
+        Progs.push(data.list[i].name)
+        similaritys.push(Math.round(data.list[i].similarity*100))
+      }
+      updateCharts(chart,state)
+    };
+    const state = reactive({
+      option: {
+        grid: {
+          top: "4%",
+          left: "2%",
+          right: "4%",
+          bottom: "0%",
+          containLabel: true,
+        },
+        xAxis: [
+          {
+            type: "category",
+
+            axisLabel: {
+              //x轴文字的配置
+              show: true,
+              interval: 0,//使x轴文字显示全
+              textStyle: {
+                color: "rgba(0, 0, 0, 1)"
+              },
+              formatter: function(params) {
+                var newParamsName = "";
+                var paramsNameNumber = params.length;
+                var provideNumber = 3; //一行显示几个字
+                var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+                if (paramsNameNumber > provideNumber) {
+                  for (var p = 0; p < rowNumber; p++) {
+                    var tempStr = "";
+                    var start = p * provideNumber;
+                    var end = start + provideNumber;
+                    if (p == rowNumber - 1) {
+                      tempStr = params.substring(start, paramsNameNumber);
+                    } else {
+                      tempStr = params.substring(start, end) + "\n";
+                    }
+                    newParamsName += tempStr;
+                  }
+                } else {
+                  newParamsName = params;
+                }
+                return newParamsName;
+              }
+            },
+            /*填入横坐标*/
+            data: Progs,
+            axisTick: {
+              alignWithLabel: true,
+            },
+          },
+        ],
+        yAxis: [
+          {
+            type: "value",
+          },
+        ],
+        series: [
+          {
+            name: "方案",
+            type: "bar",
+            barWidth: "40%",
+            itemStyle: {
+              normal: {
+                label: {
+                  show: true,
+                  position: "inside", //数据在中间显示
+                  formatter: "{c}%", //百分比显示
+                },
+              },
+            },
+            data: similaritys, //你要展示的数据
+          },
+        ],
+      },
+    });
+    const initeCharts = () => {
+      chart = echarts.init(document.getElementById("main"));
+      // 绘制图表
+      chart.setOption(state.option);
+      chart.on("click", async params => {
+        console.log(params);
+      });
+    };
     const handleSelectionChange = (val) => {
       deleteList.value = []
       // 假设取出 id 字段
@@ -460,10 +604,89 @@ export default {
         editState.value = true
       }
     }
-    const exportScheme=()=>{
-
+    const exportScheme=async () => {
+      axios({
+        url: httpUrl+"/scheme/downloadDocx",
+        method: 'get',
+        responseType: 'arraybuffer',
+        params:{
+          projectId: schemeData.value[0].projectId,
+        }
+      }).then(res => {
+        const blob = new Blob([res.data]);
+        //创建一个<a></a>标签
+        let a = document.createElement("a");
+        // 将流文件写入a标签的href属性值
+        a.href = URL.createObjectURL(blob);
+        //设置文件名
+        const str = schemeData.value[0].name+'.docx';
+        a.download = str;
+        // 隐藏a标签
+        a.style.display = "none";
+        // 将a标签追加到文档对象中
+        document.body.appendChild(a);
+        // 模拟点击了a标签，会触发a标签的href的读取，浏览器就会自动下载了
+        a.click();
+        //用完就删除a标签
+        a.remove();
+      })
+    }
+    const similarityDialog=()=>{
+      similarityVisible.value=true
+      nextTick(async () => {
+        {
+          const {data} = await get(httpUrl + "/project/analyze", {
+            projectId: projectStoreVar.project.id,
+            pageNum: currentPage.value,
+            navSize: navSize,
+            pageSize: pageSize
+          });
+          analyseData.value = data;
+          Progs.length = 0;
+          similaritys.length = 0;
+          for (let i = 0; i < data.list.length; i++) {
+            Progs.push(data.list[i].name)
+            similaritys.push(Math.round(data.list[i].similarity * 100))
+          }
+        }
+        initeCharts()
+      })
+    }
+    const deleteProject=async () => {
+      ElMessageBox.confirm(
+          '您确定要删除这个项目吗',
+          '请确认',
+          {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }
+      ).then(async () => {
+        const {code} = await get(httpUrl + "/project/delete", {
+          id: projectStoreVar.project.id
+        })
+        if (code === 200) {
+          ElMessage({
+            message: '删除成功',
+            type: 'success',
+          })
+          await router.push({path: "/index/ProjectManagement"})
+        } else {
+          ElMessage({
+            message: '删除失败',
+            type: 'error',
+          })
+        }
+      }).catch(() => {
+        ElMessage({
+          type: 'info',
+          message: '删除取消',
+        })
+      })
     }
     return {
+      ...toRefs(state),
+      handleCurrentChange,
       projectStoreVar,
       Edit,
       goToNewScheme,
@@ -485,7 +708,14 @@ export default {
       schemeData,
       editScheme,
       exportScheme,
-      editState
+      editState,
+      similarityVisible,
+      pageSize,
+      navSize,
+      currentPage,
+      analyseData,
+      similarityDialog,
+      deleteProject
     };
   },
 }
